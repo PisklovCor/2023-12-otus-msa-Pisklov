@@ -10,6 +10,6 @@ public class BaseController {
     @GetMapping("/health")
     public ResponseDto getHealth() {
         System.out.println("Запрос на health для голов контейнера");
-        return ResponseDto.builder().status("ok").build();
+        return ResponseDto.builder().status("OK").build();
     }
 }
