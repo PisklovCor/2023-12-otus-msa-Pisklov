@@ -4,15 +4,17 @@ metadata:
   name: hw-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /health
 
 spec:
   ingressClassName: nginx
   rules:
-    - host: "arch.homework"
+    - host: arch.homework
       http:
         paths:
-        - path: "/health"
-          pathType: Prefix
+        - path: /
+          pathType: ImplementationSpecific
           backend:
             service:
               name: hw-service

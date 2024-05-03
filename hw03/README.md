@@ -5,6 +5,8 @@
 ### Проверка 
 ````
 curl http://arch.homework/health
+curl http://arch.homework/rewrite/health
+
 ````
 
 ### Создание kind: Deployment
