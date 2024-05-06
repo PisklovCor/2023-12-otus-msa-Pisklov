@@ -1,0 +1,12 @@
+server:
+  port: 8000
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: admin
+    password: admin
+    driverClassName: org.postgresql.Driver
+  liquibase:
+    enabled: true
+  application:
+    name: application-hw04
