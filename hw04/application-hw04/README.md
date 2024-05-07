@@ -9,6 +9,7 @@ mvn clean package
 
 ### Сборка docker images:
 ````
+cd .\hw04\application-hw04\
 docker build -t pisklovcor/hw-04-docker:dockerfile .
 ````
 
