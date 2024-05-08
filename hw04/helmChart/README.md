@@ -10,6 +10,8 @@ minikube addons enable ingress
 minikube tunnel
 
 minikube dashboard
+
+ minikube delete --all
 ````
 
 ### Работа с Helm Chart
