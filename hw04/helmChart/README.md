@@ -1,3 +1,8 @@
+### Проверка curl
+````
+curl http://arch.homework/health
+````
+
 ### Проверка swagger
 ````
 http://arch.homework/swagger-ui/index.html
@@ -11,7 +16,7 @@ minikube tunnel
 
 minikube dashboard
 
- minikube delete --all
+minikube delete --all
 ````
 
 ### Работа с Helm Chart
