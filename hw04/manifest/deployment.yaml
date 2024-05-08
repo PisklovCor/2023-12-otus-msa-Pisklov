@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hw-app
-        image: pisklovcor/hw-04-docker:dockerfile
+        image: pisklovcor/hw-04-app-docker:dockerfile
         ports:
           - containerPort: 8000
         env:
@@ -24,7 +24,7 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: hw-app-config
-                key : datasourceUrl
+                key: datasourceUrl
 
 ---
 

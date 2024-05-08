@@ -1,15 +1,13 @@
 server:
   port: 8000
 spring:
+  application:
+    name: hw04-app
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: admin
     password: admin
     driverClassName: org.postgresql.Driver
-  liquibase:
-    enabled: true
-  application:
-    name: application-hw04
 management:
   endpoints:
     enabled-by-default: true

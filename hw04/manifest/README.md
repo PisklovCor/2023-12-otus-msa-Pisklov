@@ -5,7 +5,6 @@
 ### Проверка curl
 ````
 curl http://arch.homework/health
-curl http://arch.homework/rewrite/health
 ````
 
 ### Проверка swagger
@@ -21,11 +20,11 @@ kubectl apply -f .
 
 ### Команды взаимодействия (minikube, kubectl)
 ````
-minikube dashboard
-
 minikube addons enable ingress
 
 minikube tunnel
+
+minikube dashboard
 
 pods/replicaset/deploy/svc/ingress/secret/configmap
 kubectl get 
@@ -60,4 +59,10 @@ kubectl delete -f secret.yaml
 ````
 kubectl apply -f configmap.yaml
 kubectl delete -f configmap.yaml
+````
+
+### Создание/удаление kind: ConfigMap
+````
+kubectl apply -f job.yaml
+kubectl delete -f job.yaml
 ````
