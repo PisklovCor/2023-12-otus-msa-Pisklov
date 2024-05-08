@@ -1,0 +1,12 @@
+# Default Values for my Helm Chart
+
+container:
+  postgres:
+    image: postgres:13.3
+    replicaCount: 1
+  hwApp:
+    image: pisklovcor/hw-04-app-docker:dockerfile
+    replicaCount: 2
+
+migration:
+  image: pisklovcor/hw-04-migration-docker:dockerfile
