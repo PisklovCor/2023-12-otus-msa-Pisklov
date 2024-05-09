@@ -2,7 +2,7 @@ version: "3.9"
 services:
   postgres:
     image: postgres:13.3
-    container_name: container_postgres
+    container_name: postgres
     environment:
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "admin"
@@ -11,3 +11,37 @@ services:
       - "5432:5432"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+    networks:
+      monitoring:
+
+  grafana:
+    build: './config/grafana'
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      monitoring:
+        aliases:
+          - grafana
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/prometheus
+    networks:
+      monitoring:
+        aliases:
+          - prometheus
+
+networks:
+  monitoring:
+    name: hw-networks

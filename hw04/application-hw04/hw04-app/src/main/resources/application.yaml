@@ -10,10 +10,14 @@ spring:
     driverClassName: org.postgresql.Driver
 management:
   endpoints:
-    enabled-by-default: true
     web:
       exposure:
-        include: "health,info,env"
-  endpoint:
-    info:
-      enabled: true
+        include: health,prometheus
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
