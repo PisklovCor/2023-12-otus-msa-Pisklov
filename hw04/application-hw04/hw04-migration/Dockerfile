@@ -6,7 +6,7 @@ WORKDIR hw-04-migration
 
 COPY . .
 
-ENV JDBC_URL="jdbc:postgresql://127.0.0.1:5432/postgres" \
+ENV JDBC_URL="jdbc:postgresql://postgres:5432/postgres" \
   JDBC_USERNAME="admin" \
   JDBC_PASSWORD="admin"
 

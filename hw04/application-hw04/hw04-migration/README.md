@@ -15,10 +15,20 @@ mvn liquibase:update -Pdocker
 
 ### Сборка образа
 ````
-docker build -t pisklovcor/hw-04-migration-docker:dockerfile .  
+docker build -t pisklovcor/hw-04-migration-v2-docker:dockerfile .  
 ````
 
 ### Запуск образа
 ````
-docker run pisklovcor/hw-04-migration-docker:dockerfile
+docker run pisklovcor/hw-04-migration-v2-docker:dockerfile
+````
+
+### Проверка network:
+````
+docker network ls
+````
+
+### Сборка метрик и мониторинг:
+````
+docker run --name hw04-migration --network=hw-networks -d pisklovcor/hw-04-migration-v2-docker:dockerfile
 ````
