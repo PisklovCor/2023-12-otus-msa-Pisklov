@@ -19,6 +19,7 @@
     <modules>
         <module>hw04-app</module>
         <module>hw04-migration</module>
+        <module>hw04-liquibase-migration</module>
     </modules>
 
     <properties>
