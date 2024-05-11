@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hw-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: hw-migration
+          image: pisklovcor/hw-04-migration-docker:dockerfile
+          command: ["mvn", "liquibase:update", "-Pdocker", "-e"]
+          env:
+            - name: JDBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: hw-app-config
+                  key: datasourceUrl
+            - name: liquibase.url
+              valueFrom:
+                configMapKeyRef:
+                  name: hw-app-config
+                  key: datasourceUrl
+            - name: liquibase.username
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgresUser
+            - name: liquibase.password
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgresPassword
+      restartPolicy: Never
+  backoffLimit: 4

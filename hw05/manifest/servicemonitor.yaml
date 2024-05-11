@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus
+  labels:
+    serviceMonitorSelector: prometheus
+
+spec:
+  endpoints:
+    - interval  : 10s
+      port      : metrics
+      targetPort: 9090
+      path      : /actuator/prometheus
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: hw-metrics
