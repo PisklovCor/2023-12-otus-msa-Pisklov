@@ -1,0 +1,19 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: hw04-app-prometheus
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: admin
+    password: admin
+    driverClassName: org.postgresql.Driver
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "health,info,env"
+  endpoint:
+    info:
+      enabled: true

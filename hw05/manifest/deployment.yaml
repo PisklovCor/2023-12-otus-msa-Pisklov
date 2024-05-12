@@ -16,7 +16,7 @@ spec:
         env: hw
     spec:
       containers:
-      - name: hw-app
+      - name: hw04-app-prometheus
         image: pisklovcor/hw-04-app-pro-docker:dockerfile
         ports:
           - containerPort: 8000

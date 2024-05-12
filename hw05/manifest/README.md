@@ -25,10 +25,12 @@ minikube start
 minikube addons enable ingress
 ```
 
+### tunnel-отдельная консоль
 ```shell
 minikube tunnel
 ```
 
+### dashboard-отдельная консоль
 ```shell
 minikube dashboard
 ```
@@ -55,10 +57,16 @@ helm list
 helm install stack prometheus-community/kube-prometheus-stack -f c:\JavaProject\otus\2023-12-otus-msa-Pisklov\hw05\config\prometheus.yaml
 ```
 
-### Проброс портов для prometheus
+### prometheus-отдельная консоль
 ```shell 
 kubectl port-forward service/prometheus-operated  9090
 ```
+
+### grafana-отдельная консоль (admin/prom-operator)
+```shell 
+kubectl port-forward service/stack-grafana 9000:80
+```
+
 
 ### Применить манифесты одной командой kubectl
 ```shell
