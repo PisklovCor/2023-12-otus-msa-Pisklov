@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.otus.hw.exceptions.AuthenticationException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> handler(AuthenticationException e) {
-        return ResponseEntity.status(BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body("Ошибка аутентификация");
+        return ResponseEntity.status(UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON).body("Ошибка аутентификация");
 
     }
 }

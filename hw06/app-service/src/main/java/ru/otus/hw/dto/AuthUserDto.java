@@ -13,7 +13,11 @@ public class AuthUserDto {
 
     private String login;
 
-    private int age;
-
     private String email;
+
+    private String firstName;
+
+    private String lastName;
+
+    private int age;
 }
