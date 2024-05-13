@@ -14,7 +14,7 @@ docker build -t pisklovcor/hw-06-service-docker:dockerfile .
 
 ### Запуск docker образа:
 ````shell
-docker run --name hw06-service -p 8001:8001 --network=hw-networks -e "JAVA_OPTS=-Ddebug -Dspring.datasource.url=jdbc:postgresql://postgres:5432/postgres" -d pisklovcor/hw-06-service-docker:dockerfile
+docker run --name hw06-service -p 8002:8002 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' --network=hw-networks -d pisklovcor/hw-06-service-docker:dockerfile
 ````
 
 ### Проверка network:

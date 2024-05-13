@@ -14,7 +14,7 @@ docker build -t pisklovcor/hw-06-auth-docker:dockerfile .
 
 ### Запуск docker образа:
 ````shell
-docker run --name hw06-auth -p 8001:8001 --network=hw-networks -e "JAVA_OPTS=-Ddebug -Dspring.datasource.url=jdbc:postgresql://postgres:5432/postgres" -d pisklovcor/hw-06-auth-docker:dockerfile
+docker run --name hw06-auth -p 8001:8001 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' --network=hw-networks -d pisklovcor/hw-06-auth-docker:dockerfile
 ````
 
 ### Проверка network:
