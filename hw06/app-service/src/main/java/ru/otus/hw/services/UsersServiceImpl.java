@@ -17,17 +17,17 @@ public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
 
     @Override
-    public Optional<AuthUser> findByLoginPassword(String login, String password) {
-        var user = usersRepository.findByLoginPassword(login, password);
+    public Optional<AuthUser> findById(String id) {
+        var user = usersRepository.findById(id);
 
         if (user.isEmpty()) {
-            throw new EntityNotFoundException("One user with login %s not found".formatted(login));
+            throw new EntityNotFoundException("One user with ids %s not found".formatted(id));
         }
          return user;
     }
 
     @Override
-    public AuthUser create(AuthUser authUser) {
-        return usersRepository.create(authUser);
+    public AuthUser create(String id , String login) {
+        return usersRepository.create(id, login);
     }
 }

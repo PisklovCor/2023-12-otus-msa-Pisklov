@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-05-06--0001-user_profile
+      author: pisklov
+      changes:
+        - createTable:
+            tableName: user_profile
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_user_profile
+              - column:
+                  name: login
+                  type: varchar(255)
+              - column:
+                  name: age
+                  type: integer
