@@ -44,6 +44,34 @@ public class UserController {
         return authUserDto;
     }
 
+    @PostMapping("/users/{userId}")
+    public AuthUserDto getUsers(HttpServletRequest request, @PathVariable long userId) {
+
+        var headerUserId = request.getHeader("X-UserId");
+
+        if (headerUserId == null) {
+            throw new AuthenticationException("Error authentication");
+        }
+
+        if (!(Integer.parseInt(headerUserId) == userId)) {
+            throw new AuthenticationException("Error authentication");
+        }
+
+        var user = usersService.findById(headerUserId);
+
+        AuthUser authUser = user.get();
+
+        AuthUserDto authUserDto = new AuthUserDto();
+        authUserDto.setId(authUser.getId());
+        authUserDto.setLogin(authUser.getLogin());
+        authUserDto.setEmail(request.getHeader("X-Email"));
+        authUserDto.setFirstName(request.getHeader("X-First-Name"));
+        authUserDto.setLastName(request.getHeader("X-Last-Name"));
+        authUserDto.setAge(authUser.getAge());
+
+        return authUserDto;
+    }
+
     @PutMapping("/users/me")
     public AuthUserDto putMe(HttpServletRequest request) {
 
