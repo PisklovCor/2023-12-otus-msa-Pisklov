@@ -17,12 +17,12 @@ minikube addons enable ingress
 ```
 
 ### tunnel-отдельная консоль
-```shell
+```
 minikube tunnel
 ```
 
 ### dashboard-отдельная консоль
-```shell
+```
 minikube dashboard
 ```
 

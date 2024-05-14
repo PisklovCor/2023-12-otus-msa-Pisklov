@@ -61,7 +61,12 @@ public class UserController {
     }
 
     @GetMapping("/signin")
-    public ResponseDto signin() {
+    public ResponseDto signinGet() {
+        return ResponseDto.builder().status("Please go to login and provide Login/Password").build();
+    }
+
+    @PostMapping("/signin")
+    public ResponseDto signinPost() {
         return ResponseDto.builder().status("Please go to login and provide Login/Password").build();
     }
 
