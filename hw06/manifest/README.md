@@ -35,3 +35,8 @@ kubectl apply -f .
 ```shell
 minikube delete --all
 ```
+
+### Для тестирования коллекции postman включить настройку:
+### Settings:
+### Automatically follow redirects
+### Follow HTTP 3xx responses as redirects.
