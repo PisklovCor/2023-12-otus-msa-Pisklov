@@ -80,7 +80,7 @@ public class UserController {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("session_id")) {
 
-                    if (sessions.containsKey(UUID.fromString(cookie.getValue()))) {
+                    if (!cookie.getValue().isBlank() && sessions.containsKey(UUID.fromString(cookie.getValue()))) {
 
                         AuthUser authUser = sessions.get(UUID.fromString(cookie.getValue()));
 
