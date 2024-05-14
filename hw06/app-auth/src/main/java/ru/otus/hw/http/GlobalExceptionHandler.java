@@ -1,5 +1,6 @@
 package ru.otus.hw.http;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,24 +11,28 @@ import ru.otus.hw.exceptions.EntityNotFoundException;
 
 import static org.springframework.http.HttpStatus.*;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handler(EntityNotFoundException e) {
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body("Ошибка сервера");
+        log.error("Ошибка: {}", e.getMessage());
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body("Ошибка сервера app-auth");
 
     }
 
     @ExceptionHandler(AuthUserNotFoundException.class)
     public ResponseEntity<String> handler(AuthUserNotFoundException e) {
-        return ResponseEntity.status(BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body("Ошибка при поиске пользователя");
+        log.error("Ошибка: {}", e.getMessage());
+        return ResponseEntity.status(BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body("Ошибка при поиске пользователя app-auth");
 
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> handler(AuthenticationException e) {
-        return ResponseEntity.status(UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON).body("Ошибка аутентификация");
+        log.error("Ошибка: {}", e.getMessage());
+        return ResponseEntity.status(UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON).body("Ошибка аутентификация app-auth");
 
     }
 }
