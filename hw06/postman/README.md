@@ -2,7 +2,7 @@
 
 ### Запуск тестов с
 ```shell
-newman run /postman/hw06_Collection.postman_collection.json -e postman/hw06_enviroment.postman_environment.json
+newman run hw06_Collection.postman_collection.json -e hw06_enviroment.postman_environment.json
 ```
 
 ### Настройка windows
@@ -12,6 +12,13 @@ newman run /postman/hw06_Collection.postman_collection.json -e postman/hw06_envi
 - На вопрос отвечаем - A
 
 - Возврат - Set-ExecutionPolicy Default
+```
+
+### Проверка версий
+```
+node -v
+npm -v
+newman -v
 ```
 
 ### Для тестирования коллекции postman включить настройку:
