@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-hw-ingress-service
+  annotations:
+    kubernetes.io/ingress.class          : nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/auth-url: "http://arch.homework/auth"
+    nginx.ingress.kubernetes.io/auth-method: 'POST'
+    nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-User,X-Email,X-UserId,X-First-Name,X-Last-Name"
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.base.host }}
+      http:
+        paths:
+        - path: /users/
+          pathType: {{ .Values.base.pathType }}
+          backend:
+            service:
+              name: {{ .Release.Name }}-hw-service-service
+              port:
+                number: {{ .Values.base.port }}

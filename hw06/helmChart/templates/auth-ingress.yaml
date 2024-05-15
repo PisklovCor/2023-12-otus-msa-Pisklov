@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-hw-ingress-auth
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.base.host }}
+      http:
+        paths:
+        - path: /register
+          pathType: {{ .Values.base.pathType }}
+          backend:
+            service:
+              name: {{ .Release.Name }}-hw-service-auth
+              port:
+                number: {{ .Values.base.port }}
+        - path: /login
+          pathType: {{ .Values.base.pathType }}
+          backend:
+            service:
+              name: {{ .Release.Name }}-hw-service-auth
+              port:
+                number: {{ .Values.base.port }}
+        - path: /signin
+          pathType: {{ .Values.base.pathType }}
+          backend:
+            service:
+              name: {{ .Release.Name }}-hw-service-auth
+              port:
+                number: {{ .Values.base.port }}
+        - path: /logout
+          pathType: {{ .Values.base.pathType }}
+          backend:
+            service:
+              name: {{ .Release.Name }}-hw-service-auth
+              port:
+                number: {{ .Values.base.port }}
+        - path: /auth
+          pathType: {{ .Values.base.pathType }}
+          backend:
+            service:
+              name: {{ .Release.Name }}-hw-service-auth
+              port:
+                number: {{ .Values.base.port }}

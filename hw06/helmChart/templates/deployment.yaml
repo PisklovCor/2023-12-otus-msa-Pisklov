@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-hw-deployment-auth
+  labels:
+    app: {{ .Release.Name }}-hw-app-k8s-a
+
+spec:
+  replicas: {{ .Values.container.appAuth.replicaCount }}
+  selector:
+    matchLabels:
+      env: hw-auth
+  template:
+    metadata:
+      labels:
+        env: hw-auth
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-hw06-auth
+        image: {{ .Values.container.appAuth.image }}
+        ports:
+          - containerPort: {{ .Values.container.appAuth.containerPort }}
+        env:
+          - name: spring.datasource.url
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}-hw-app-config
+                key: datasourceUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-hw-deployment-service
+  labels:
+    app: {{ .Release.Name }}-hw-app-k8s-s
+
+spec:
+  replicas: {{ .Values.container.appService.replicaCount }}
+  selector:
+    matchLabels:
+      env: hw-service
+  template:
+    metadata:
+      labels:
+        env: hw-service
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-hw06-service
+          image: {{ .Values.container.appService.image }}
+          ports:
+            - containerPort: {{ .Values.container.appService.containerPort }}
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-hw-app-config
+                  key: datasourceUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-postgres
+  labels:
+    app: {{ .Release.Name }}-hw-postgres
+
+spec:
+  replicas: {{ .Values.container.postgres.replicaCount }}
+  selector:
+    matchLabels:
+      env: postgres-app
+  template:
+    metadata:
+      labels:
+        env: postgres-app
+    spec:
+      containers:
+        - name  : {{ .Release.Name }}-postgres-13
+          image : {{ .Values.container.postgres.image }}
+          ports :
+            - containerPort: {{ .Values.container.postgres.containerPort }}
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key : postgresDb
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key : postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key : postgresPassword

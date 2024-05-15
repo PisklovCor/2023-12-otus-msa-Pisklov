@@ -1,0 +1,23 @@
+# Default Values for my Helm Chart
+ports:
+  port: 80
+  protocol: TCP
+
+base:
+  port: 80
+  host: arch.homework
+  pathType: ImplementationSpecific
+
+container:
+  appAuth:
+    image: pisklovcor/hw-06-auth-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8001
+  appService:
+    image: pisklovcor/hw-06-service-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8002
+  postgres:
+    image: postgres:13.3
+    replicaCount: 1
+    containerPort: 5432
