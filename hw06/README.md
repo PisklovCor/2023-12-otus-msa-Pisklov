@@ -12,5 +12,5 @@ helm install hw06 helmChart
 
 ### Удаление HelmChart
 ```shell
-helm install hw06 helmChart
+helm delete hw06
 ````
