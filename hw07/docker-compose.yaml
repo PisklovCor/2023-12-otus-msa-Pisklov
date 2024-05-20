@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13.3
+    container_name: postgres
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    networks:
+      monitoring:
+
+  jms-broker:
+    image: 'vromero/activemq-artemis:2.10.1'
+    ports:
+      - '8161:8161'
+      - '9404:9404'
+      - '61616:61616'
+    environment:
+      ARTEMIS_USERNAME: user
+      ARTEMIS_PASSWORD: user
+      ARTEMIS_MAX_MEMORY: 1G
+      BROKER_CONFIG_GLOBAL_MAX_SIZE: 200000000
+      ARTEMIS_PERF_JOURNAL: ALWAYS
+      ENABLE_JMX_EXPORTER: 'true'
+      JAVA_OPTS: -XX:NativeMemoryTracking=summary
+    networks:
+      monitoring:
+
+networks:
+  monitoring:
+    name: hw-networks
