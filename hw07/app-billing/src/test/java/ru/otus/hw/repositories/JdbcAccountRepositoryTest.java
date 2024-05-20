@@ -60,7 +60,7 @@ class JdbcAccountRepositoryTest {
         var returneAccount = repository.updateMoney(account, 3000);
 
         assertThat(returneAccount).isNotNull()
-                .matches(book -> book.getId() > 0);
+                .matches(a -> a.getId() > 0);
         assertThat(returneAccount.getMoney()).isEqualTo(4000);
     }
 
@@ -75,7 +75,7 @@ class JdbcAccountRepositoryTest {
         var returneAccount = repository.updateMoney(account, -500);
 
         assertThat(returneAccount).isNotNull()
-                .matches(book -> book.getId() > 0);
+                .matches(a -> a.getId() > 0);
         assertThat(returneAccount.getMoney()).isEqualTo(500);
     }
 }

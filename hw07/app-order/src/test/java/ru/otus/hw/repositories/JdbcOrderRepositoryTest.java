@@ -11,7 +11,6 @@ import ru.otus.hw.models.Order;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Репозиторий на основе Jpa для работы с заказами ")
 @JdbcTest

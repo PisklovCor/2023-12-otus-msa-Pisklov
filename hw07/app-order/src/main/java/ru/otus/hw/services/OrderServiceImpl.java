@@ -73,42 +73,44 @@ public class OrderServiceImpl implements OrderService {
             accountClient.withdrawal(login, sum);
             log.info("У пользователя [{}] списываются деньги в размере [{}]", login, sum);
 
-            return tryingSendAnUrgentMessage(login, originalMoney);
+            return tryingSendAnUrgentMessage(login, originalMoney, sum);
         } else {
             log.info("У пользователя не хватает денег на заказ");
+            sendMessageJms(accountDto, false, sum);
             return false;
         }
     }
 
-    private boolean tryingSendAnUrgentMessage(String login, Integer originalMoney) {
+    private boolean tryingSendAnUrgentMessage(String login, Integer originalMoney, Integer sum) {
 
         AccountDto checkAccountDto = accountClient.getAccountInfo(login);
 
          if (originalMoney > checkAccountDto.getMoney()) {
              log.info("У пользователя [{}] списаны деньги, баланс [{}], формирует сообщение",
                      login, checkAccountDto.getMoney());
-             sendMessageJms(checkAccountDto, true);
+             sendMessageJms(checkAccountDto, true, sum);
              return true;
          } else {
              log.error("У пользователя [{}] деньги не списаны, баланс [{}]б формирует сообщение",
                      login, checkAccountDto.getMoney());
-             sendMessageJms(checkAccountDto, false);
+             sendMessageJms(checkAccountDto, false, sum);
              return false;
          }
     }
 
-    private void sendMessageJms(AccountDto checkAccountDto, boolean status) {
+    private void sendMessageJms(AccountDto checkAccountDto, boolean status, Integer sum) {
 
         try {
             JmsMessage jmsMessage = new JmsMessage();
             jmsMessage.setLogin(checkAccountDto.getLogin());
-            jmsMessage.setSum(1000);
+            jmsMessage.setAccountInvoice(checkAccountDto.getInvoice());
+            jmsMessage.setSum(sum);
             jmsMessage.setStatus(status);
 
             artemisProducer.sendMessage(jmsMessage);
             log.info("Сообщение успешно отправлено в брокер [{}]", jmsMessage);
         } catch (Exception e) {
-            log.error("Не удалось отправить сообщение в брокер:" + e.getMessage());
+            log.error("Failed to send message to broker:" + e.getMessage());
         }
     }
 }
