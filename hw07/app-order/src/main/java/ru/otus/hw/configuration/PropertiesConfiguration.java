@@ -10,4 +10,10 @@ public class PropertiesConfiguration {
 
     @NotBlank
     private String accountUrl;
+
+    @NotBlank
+    private String destinationSend;
+
+    @NotBlank
+    private String destinationListener;
 }

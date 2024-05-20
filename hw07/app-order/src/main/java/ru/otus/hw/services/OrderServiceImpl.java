@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.client.AccountClient;
+import ru.otus.hw.client.ArtemisProducer;
 import ru.otus.hw.dto.AccountDto;
+import ru.otus.hw.dto.JmsMessage;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Order;
 import ru.otus.hw.repositories.OrderRepository;
@@ -20,6 +22,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     private final AccountClient accountClient;
+
+    private final ArtemisProducer artemisProducer;
 
     @Override
     public Order create(String login, Integer sum) {
@@ -83,11 +87,28 @@ public class OrderServiceImpl implements OrderService {
          if (originalMoney > checkAccountDto.getMoney()) {
              log.info("У пользователя [{}] списаны деньги, баланс [{}], формирует сообщение",
                      login, checkAccountDto.getMoney());
+             sendMessageJms(checkAccountDto, true);
              return true;
          } else {
              log.error("У пользователя [{}] деньги не списаны, баланс [{}]б формирует сообщение",
                      login, checkAccountDto.getMoney());
+             sendMessageJms(checkAccountDto, false);
              return false;
          }
+    }
+
+    private void sendMessageJms(AccountDto checkAccountDto, boolean status) {
+
+        try {
+            JmsMessage jmsMessage = new JmsMessage();
+            jmsMessage.setLogin(checkAccountDto.getLogin());
+            jmsMessage.setSum(1000);
+            jmsMessage.setStatus(status);
+
+            artemisProducer.sendMessage(jmsMessage);
+            log.info("Сообщение успешно отправлено в брокер [{}]", jmsMessage);
+        } catch (Exception e) {
+            log.error("Не удалось отправить сообщение в брокер:" + e.getMessage());
+        }
     }
 }
