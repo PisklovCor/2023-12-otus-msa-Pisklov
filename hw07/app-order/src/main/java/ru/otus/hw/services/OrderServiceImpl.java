@@ -35,15 +35,10 @@ public class OrderServiceImpl implements OrderService {
         order.setAccountInvoice(accountDto.getInvoice());
         order.setSumOrder(sum);
 
-        if (accountDto.getMoney() > sum) {
-            log.info("У пользоваетля есть деньги");
-            order.setStatus(true);
-        } else {
-            log.info("У пользоваетля нет денег");
-            order.setStatus(false);
-        }
+        boolean orderStatus = financialTransactions(accountDto, sum);
+        order.setStatus(orderStatus);
 
-        //TODO: осмотр денег и отправка сообщения в брокер
+        log.info("Будет создана запись о заказе [{}]", order);
 
         return orderRepository.create(order);
     }
@@ -61,5 +56,38 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findAll() {
         return orderRepository.findAll();
+    }
+
+    private boolean financialTransactions(AccountDto accountDto, Integer sum) {
+
+        final String login = accountDto.getLogin();
+        final Integer originalMoney = accountDto.getMoney();
+
+        if (accountDto.getMoney() > sum) {
+            log.info("У пользователя есть деньги на заказ [{}]", originalMoney);
+
+            accountClient.withdrawal(login, sum);
+            log.info("У пользователя [{}] списываются деньги в размере [{}]", login, sum);
+
+            return tryingSendAnUrgentMessage(login, originalMoney);
+        } else {
+            log.info("У пользователя не хватает денег на заказ");
+            return false;
+        }
+    }
+
+    private boolean tryingSendAnUrgentMessage(String login, Integer originalMoney) {
+
+        AccountDto checkAccountDto = accountClient.getAccountInfo(login);
+
+         if (originalMoney > checkAccountDto.getMoney()) {
+             log.info("У пользователя [{}] списаны деньги, баланс [{}], формирует сообщение",
+                     login, checkAccountDto.getMoney());
+             return true;
+         } else {
+             log.error("У пользователя [{}] деньги не списаны, баланс [{}]б формирует сообщение",
+                     login, checkAccountDto.getMoney());
+             return false;
+         }
     }
 }
