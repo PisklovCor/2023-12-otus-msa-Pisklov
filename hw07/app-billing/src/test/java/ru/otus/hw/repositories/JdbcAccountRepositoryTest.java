@@ -29,7 +29,7 @@ class JdbcAccountRepositoryTest {
         var returneAccount = repository.createAccount(account);
 
         assertThat(returneAccount).isNotNull()
-                .matches(book -> book.getId() > 0);
+                .matches(a -> a.getId() > 0);
 
         assertThat(repository.findAccountByLogin(returneAccount.getLogin()))
                 .isPresent();

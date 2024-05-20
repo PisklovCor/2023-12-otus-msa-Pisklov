@@ -1,8 +1,10 @@
+application:
+  account-url: http://localhost:8001
 server:
-  port: 8001
+  port: 8002
 spring:
   application:
-    name: app-billing
+    name: app-order
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: admin

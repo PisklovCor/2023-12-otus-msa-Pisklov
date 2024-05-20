@@ -4,18 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountDto {
+public class OrderDto {
 
     private String login;
 
-    private UUID invoice;
+    private Integer sum;
 
-    private Integer money;
 
-    private String fullName;
 }

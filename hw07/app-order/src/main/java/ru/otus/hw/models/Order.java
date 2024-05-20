@@ -1,4 +1,4 @@
-package ru.otus.hw.dto;
+package ru.otus.hw.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,13 +9,15 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountDto {
+public class Order {
+
+    private long id;
 
     private String login;
 
-    private UUID invoice;
+    private UUID accountInvoice;
 
-    private Integer money;
+    private Integer sumOrder;
 
-    private String fullName;
+    private boolean status;
 }
