@@ -14,7 +14,7 @@ docker build -t pisklovcor/hw-07-app-notice-docker:dockerfile .
 
 ### Запуск docker образа:
 ````shell
-docker run --name hw07-notice -p 8003:8003 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' --network=hw-networks -d pisklovcor/hw-07-app-notice-docker:dockerfile
+docker run --name hw07-notice -p 8003:8003 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' -e destinationSend='notice-order' -e destinationListener='order-notice' -e spring.artemis.broker-url='tcp://jms-broker:61616' --network=hw-networks -d pisklovcor/hw-07-app-notice-docker:dockerfile
 ````
 
 ### Проверка network:

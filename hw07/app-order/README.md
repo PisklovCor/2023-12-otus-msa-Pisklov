@@ -14,7 +14,7 @@ docker build -t pisklovcor/hw-07-app-order-docker:dockerfile .
 
 ### Запуск docker образа:
 ````shell
-docker run --name hw07-order -p 8002:8002 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' --network=hw-networks -d pisklovcor/hw-07-app-order-docker:dockerfile
+docker run --name hw07-order -p 8002:8002 -e logging.level.root='DEBUG' -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' -e application.account-url='http://host.docker.internal:8001' -e destinationSend='order-notice' -e destinationListener='notice-order' -e spring.artemis.broker-url='tcp://jms-broker:61616' --network=hw-networks -d pisklovcor/hw-07-app-order-docker:dockerfile
 ````
 
 ### Проверка network:
