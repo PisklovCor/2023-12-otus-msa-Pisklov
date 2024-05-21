@@ -5,4 +5,4 @@ metadata:
 data:
   datasourceUrl: "jdbc:postgresql://postgres-svc:5432/postgres"
   artemisUrl   : "tcp://jms-broke-svc:61616"
-  accountUrl   : 'http://hw-service-billing:80'
+  accountUrl   : "http://hw-service-billing:80"

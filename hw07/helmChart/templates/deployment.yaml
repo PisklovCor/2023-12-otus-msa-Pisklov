@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hw-deployment-billing
+  name: {{ .Release.Name }}-hw-deployment-billing
   labels:
-    app: hw-app-k8s-a
+    app: {{ .Release.Name }}-hw-app-k8s-a
 
 spec:
-  replicas: 1
+  replicas: {{ .Values.container.billing.replicaCount }}
   selector:
     matchLabels:
       env: hw-billing
@@ -16,15 +16,15 @@ spec:
         env: hw-billing
     spec:
       containers:
-      - name: hw07-billing
-        image: pisklovcor/hw-07-app-billing-docker:dockerfile
+      - name: {{ .Release.Name }}-hw07-billing
+        image: {{ .Values.container.billing.image }}
         ports:
-          - containerPort: 8001
+          - containerPort: {{ .Values.container.billing.containerPort }}
         env:
           - name: spring.datasource.url
             valueFrom:
               configMapKeyRef:
-                name: hw-app-config
+                name: {{ .Release.Name }}-hw-app-config
                 key: datasourceUrl
 
 ---
@@ -32,12 +32,12 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hw-deployment-notice
+  name: {{ .Release.Name }}-hw-deployment-notice
   labels:
-    app: hw-app-k8s-s
+    app: {{ .Release.Name }}-hw-app-k8s-s
 
 spec:
-  replicas: 1
+  replicas: {{ .Values.container.notice.replicaCount }}
   selector:
     matchLabels:
       env: hw-notice
@@ -47,20 +47,20 @@ spec:
         env: hw-notice
     spec:
       containers:
-        - name: hw07-notice
-          image: pisklovcor/hw-07-app-notice-docker:dockerfile
+        - name: {{ .Release.Name }}-hw07-notice
+          image: {{ .Values.container.notice.image }}
           ports:
-            - containerPort: 8003
+            - containerPort: {{ .Values.container.notice.containerPort }}
           env:
             - name: spring.datasource.url
               valueFrom:
                 configMapKeyRef:
-                  name: hw-app-config
+                  name: {{ .Release.Name }}-hw-app-config
                   key: datasourceUrl
             - name: spring.artemis.broker-url
               valueFrom:
                 configMapKeyRef:
-                  name: hw-app-config
+                  name: {{ .Release.Name }}-hw-app-config
                   key: artemisUrl
 
 ---
@@ -68,12 +68,12 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hw-deployment-order
+  name: {{ .Release.Name }}-hw-deployment-order
   labels:
-    app: hw-app-k8s-s
+    app: {{ .Release.Name }}-hw-app-k8s-s
 
 spec:
-  replicas: 1
+  replicas: {{ .Values.container.order.replicaCount }}
   selector:
     matchLabels:
       env: hw-order
@@ -83,25 +83,25 @@ spec:
         env: hw-order
     spec:
       containers:
-        - name: hw07-order
-          image: pisklovcor/hw-07-app-order-docker:dockerfile
+        - name: {{ .Release.Name }}-hw07-order
+          image: {{ .Values.container.order.image }}
           ports:
-            - containerPort: 8002
+            - containerPort: {{ .Values.container.order.containerPort }}
           env:
             - name: spring.datasource.url
               valueFrom:
                 configMapKeyRef:
-                  name: hw-app-config
+                  name: {{ .Release.Name }}-hw-app-config
                   key: datasourceUrl
             - name: spring.artemis.broker-url
               valueFrom:
                 configMapKeyRef:
-                  name: hw-app-config
+                  name: {{ .Release.Name }}-hw-app-config
                   key: artemisUrl
             - name: application.account-url
               valueFrom:
                 configMapKeyRef:
-                  name: hw-app-config
+                  name: {{ .Release.Name }}-hw-app-config
                   key: accountUrl
 
 ---
@@ -109,12 +109,12 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: {{ .Release.Name }}-postgres
   labels:
-    app: hw-postgres
+    app: {{ .Release.Name }}-hw-postgres
 
 spec:
-  replicas: 1
+  replicas: {{ .Values.container.postgres.replicaCount }}
   selector:
     matchLabels:
       env: postgres-app
@@ -124,25 +124,25 @@ spec:
         env: postgres-app
     spec:
       containers:
-        - name  : postgres-13
-          image : postgres:13.3
+        - name  : {{ .Release.Name }}-postgres-13
+          image : {{ .Values.container.postgres.image }}
           ports :
-            - containerPort: 5432
+            - containerPort: {{ .Values.container.postgres.containerPort }}
           env:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: {{ .Release.Name }}-hw-secret
                   key : postgresDb
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: {{ .Release.Name }}-hw-secret
                   key : postgresUser
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: {{ .Release.Name }}-hw-secret
                   key : postgresPassword
 
 ---
@@ -150,12 +150,12 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jms-broker
+  name: {{ .Release.Name }}-jms-broker
   labels:
-    app: hw-jms-broker
+    app: h{{ .Release.Name }}-w-jms-broker
 
 spec:
-  replicas: 1
+  replicas: {{ .Values.container.jmsBroker.replicaCount }}
   selector:
     matchLabels:
       env: jms-broker-app
@@ -165,20 +165,20 @@ spec:
         env: jms-broker-app
     spec:
       containers:
-        - name  : hw-broker
-          image : vromero/activemq-artemis:2.10.1
+        - name  : {{ .Release.Name }}-hw-broker
+          image : {{ .Values.container.jmsBroker.image }}
           ports :
-            - containerPort: 61616
+            - containerPort: {{ .Values.container.jmsBroker.containerPort }}
           env:
             - name: ARTEMIS_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: {{ .Release.Name }}-hw-secret
                   key : artemisUsername
             - name: ARTEMIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: {{ .Release.Name }}-hw-secret
                   key : artemisPassword
             - name: ARTEMIS_MAX_MEMORY
               value: 1G

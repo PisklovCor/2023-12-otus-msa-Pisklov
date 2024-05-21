@@ -1,0 +1,31 @@
+# Default Values for my Helm Chart
+ports:
+  port: 80
+  protocol: TCP
+
+base:
+  port: 80
+  host: arch.homework
+  pathType: ImplementationSpecific
+
+container:
+  billing:
+    image: pisklovcor/hw-07-app-billing-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8001
+  notice:
+    image: pisklovcor/hw-07-app-notice-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8003
+  order:
+    image: pisklovcor/hw-07-app-order-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8002
+  postgres:
+    image: postgres:13.3
+    replicaCount: 1
+    containerPort: 5432
+  jmsBroker:
+    image: vromero/activemq-artemis:2.10.1
+    replicaCount: 1
+    containerPort: 61616
