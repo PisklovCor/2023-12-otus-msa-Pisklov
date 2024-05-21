@@ -19,7 +19,6 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.createAccount(account);
     }
 
-
     @Override
     public Optional<Account> findAccountByLogin(String login) {
         var account = accountRepository.findAccountByLogin(login);

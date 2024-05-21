@@ -11,7 +11,6 @@ public class AccountConverter {
     public Account mapDtoToModel(AccountDto dto) {
         Account account = new Account();
         account.setLogin(dto.getLogin());
-        account.setInvoice(UUID.randomUUID());
         account.setMoney(dto.getMoney());
         account.setFullName(dto.getFullName());
         return account;
