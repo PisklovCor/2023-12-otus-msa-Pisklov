@@ -1,0 +1,530 @@
+{
+	"info": {
+		"_postman_id": "9e342439-c08d-47d6-920d-01d401c19756",
+		"name": "hw07_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34799908"
+	},
+	"item": [
+		{
+			"name": "Создать пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"console.log(\"Set environment login=\" + responseData.login);\r",
+							"pm.environment.set(\"login\", responseData.login);\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData).to.have.property('id');\r",
+							"  pm.expect(responseData).to.have.property('login');\r",
+							"  pm.expect(responseData).to.have.property('invoice');\r",
+							"  pm.expect(responseData).to.have.property('money');\r",
+							"  pm.expect(responseData).to.have.property('fullName');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Id is a non-negative integer\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.id).to.be.a('number');\r",
+							"    pm.expect(responseData.id).to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Login is a non-empty string\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.login).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Login should not be empty\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"test_postman\",\r\n    \"money\": 100,\r\n    \"fullName\": \"postman_postman\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/register",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Положить деньги на счет пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"console.log(\"Set environment money=\" + responseData.money);\r",
+							"pm.environment.set(\"money\", responseData.money);\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate response schema for id, login, invoice, money, and fullName\", function () {    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"    pm.expect(responseData).to.have.property('login');\r",
+							"    pm.expect(responseData).to.have.property('invoice');\r",
+							"    pm.expect(responseData).to.have.property('money');\r",
+							"    pm.expect(responseData).to.have.property('fullName');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Account money count above 0\", function () {\r",
+							"  pm.expect(responseData.money).to.be.above(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "1000",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/refill/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"refill",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Сделать заказ, на который хватает денег",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has the required fields - id, login, accountInvoice, sumOrder, and status\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData).to.have.property('id');\r",
+							"  pm.expect(responseData).to.have.property('login');\r",
+							"  pm.expect(responseData).to.have.property('accountInvoice');\r",
+							"  pm.expect(responseData).to.have.property('sumOrder');\r",
+							"  pm.expect(responseData).to.have.property('status');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"SumOrder is a non-negative integer\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.sumOrder).to.be.a('number');\r",
+							"  pm.expect(responseData.sumOrder).to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response content type is application/json\", function () {\r",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"{{login}}\",\r\n    \"sum\": 500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/create-order",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"create-order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Посмотреть деньги на счету (снятие)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();",
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 400ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);",
+							"});",
+							"",
+							"pm.test(\"Response has the required fields - id, login, invoice, money, and fullName\", function () {",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.id).to.exist;",
+							"  pm.expect(responseData.login).to.exist;",
+							"  pm.expect(responseData.invoice).to.exist;",
+							"  pm.expect(responseData.money).to.exist;",
+							"  pm.expect(responseData.fullName).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Id is a non-negative integer\", function () {",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.id).to.be.a('number');",
+							"    pm.expect(responseData.id).to.be.at.least(0);",
+							"});",
+							"",
+							"pm.test(\"Login and fullName must be non-empty strings\", function () {",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.login).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Login should not be empty\");",
+							"  pm.expect(responseData.fullName).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Full Name should not be empty\");",
+							"});",
+							"",
+							"pm.test(\"Withdrawing money from an account\", function () {",
+							"  pm.expect(responseData.money).to.be.below(pm.environment.get(\"money\"));",
+							"});",
+							"",
+							"console.log(\"Set environment money=\" + responseData.money);",
+							"pm.environment.set(\"money\", responseData.money);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/account/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Сообщение отправилось (заказ создан)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate the response schema for required fields\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.id).to.exist;\r",
+							"    pm.expect(responseData.login).to.exist;\r",
+							"    pm.expect(responseData.accountInvoice).to.exist;\r",
+							"    pm.expect(responseData.sumOrder).to.exist;\r",
+							"    pm.expect(responseData.message).to.exist;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"A message about a successful order has been sent\", function () {\r",
+							"    pm.expect(responseData.message).to.include(\"создан и оплачен\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/notification/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"notification",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Сделать заказ, на который не хватает денег",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is within an acceptable range\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"    pm.expect(responseData).to.have.property('login');\r",
+							"    pm.expect(responseData).to.have.property('accountInvoice');\r",
+							"    pm.expect(responseData).to.have.property('sumOrder');\r",
+							"    pm.expect(responseData).to.have.property('status');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Id should be a non-negative integer\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.id).to.be.a('number').and.to.satisfy((id) => id >= 0, \"Id should be a non-negative integer\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Login and accountInvoice are non-empty strings\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.login).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"  pm.expect(responseData.accountInvoice).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Order created and canceled\", function () {\r",
+							"  pm.expect(responseData.status).to.eql(false);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"{{login}}\",\r\n    \"sum\": 500000000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/create-order",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"create-order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Посмотреть деньги на счету (без изменения)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has the required fields - id, login, invoice, money, and fullName\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.id).to.exist;\r",
+							"  pm.expect(responseData.login).to.exist;\r",
+							"  pm.expect(responseData.invoice).to.exist;\r",
+							"  pm.expect(responseData.money).to.exist;\r",
+							"  pm.expect(responseData.fullName).to.exist;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Id is a non-negative integer\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.id).to.be.a('number');\r",
+							"    pm.expect(responseData.id).to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Login and fullName must be non-empty strings\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.login).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Login should not be empty\");\r",
+							"  pm.expect(responseData.fullName).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Full Name should not be empty\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Money for the order was not deducted\", function () {\r",
+							"  pm.expect(responseData.money).to.eql(pm.environment.get(\"money\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/account/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Сообщение отправилось (заказ отменен)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate the response schema for required fields\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.id).to.exist;\r",
+							"    pm.expect(responseData.login).to.exist;\r",
+							"    pm.expect(responseData.accountInvoice).to.exist;\r",
+							"    pm.expect(responseData.sumOrder).to.exist;\r",
+							"    pm.expect(responseData.message).to.exist;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cancellation message sent order\", function () {\r",
+							"    pm.expect(responseData.message).to.include(\"Проверьте пожалуйста состояние Вашего счета\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/notification/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"notification",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
