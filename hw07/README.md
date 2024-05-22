@@ -10,6 +10,7 @@
 - Посмотреть в сервисе нотификаций отправленные сообщения и убедиться, что сообщение отправилось.
 
 ## RESTful
+![restful-mermaid-diagram](README.assets/restful-mermaid-diagram.png)
 
 ## Event Notifications (Выбрана в качестве реализации)
 [Описание REST интерфейcов](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/PisklovCor/2023-12-otus-msa-Pisklov/main/hw07/README.assets/event-notifications-openapi.yaml)
