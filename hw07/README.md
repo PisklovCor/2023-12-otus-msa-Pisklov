@@ -12,6 +12,7 @@
 ## RESTful
 
 ## Event Notifications (Выбрана в качестве реализации)
+[Описание REST интерфейcов]()
 
 ### Sequence диаграмма
 ![event-notifications-mermaid-diagram](README.assets/event-notifications-mermaid-diagram.png)
