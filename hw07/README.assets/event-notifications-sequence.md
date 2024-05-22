@@ -19,7 +19,7 @@ sequenceDiagram
     Billing Service-->>-Order Service: 202 Accepted {AccountDto}
     end
     Order Service->>+Message Broker: publish
-    Message Broker-->>-Notification service: cunsume
+    Message Broker-->>-Notification service: consume
     activate Notification service
     Notification service->>Notification service: create notification
     Note right of Notification service: Receiving a message from a queue, saving and sending an email

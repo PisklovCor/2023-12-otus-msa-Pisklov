@@ -23,3 +23,5 @@
 ![event-notifications-drawio](README.assets/event-notifications-drawio.png)
 
 ## Event Collaboration
+### Sequence диаграмма:
+![event-collaboration-mermaid-diagram](README.assets/event-collaboration-mermaid-diagram.png)
