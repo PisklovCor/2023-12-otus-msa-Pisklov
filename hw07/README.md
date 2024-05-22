@@ -13,6 +13,10 @@
 
 ## Event Notifications (Выбрана в качестве реализации)
 
-![mermaid-diagram-20200526103406](README.assets/event-notifications-mermaid-diagram.png)
+### Sequence диаграмма
+![event-notifications-mermaid-diagram](README.assets/event-notifications-mermaid-diagram.png)
+
+### Схема взаимодействия сервисов
+![event-notifications-drawio](README.assets/event-notifications-drawio.png)
 
 ## Event Collaboration
