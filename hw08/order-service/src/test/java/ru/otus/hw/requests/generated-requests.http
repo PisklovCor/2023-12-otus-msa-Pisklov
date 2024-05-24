@@ -1,2 +1,2 @@
 ###
-GET http://localhost:8001/health
+GET http://localhost:8001/api/order/health-service

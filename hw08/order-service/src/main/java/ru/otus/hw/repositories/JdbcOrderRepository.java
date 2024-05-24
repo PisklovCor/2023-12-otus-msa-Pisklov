@@ -41,14 +41,10 @@ public class JdbcOrderRepository implements OrderRepository {
                         " values (:login, :account_invoice, :description_order, :sum_order, :status)"
                 , params, keyHolder, new String[]{"id"});
 
-        Order createOrder = new Order();
-        createOrder.setId(keyHolder.getKeyAs(Long.class));
-        createOrder.setLogin(order.getLogin());
-        createOrder.setAccountInvoice(order.getAccountInvoice());
-        createOrder.setDescriptionOrder(order.getDescriptionOrder());
-        createOrder.setSumOrder(order.getSumOrder());
-        createOrder.setStatus(order.getStatus());
-        return createOrder;
+
+        var optionalOrder = findById(keyHolder.getKeyAs(Long.class));
+
+        return optionalOrder.orElseThrow(() -> new EntityNotFoundException("Order not created"));
     }
 
     @Override
@@ -58,7 +54,7 @@ public class JdbcOrderRepository implements OrderRepository {
         return Optional.ofNullable(jdbc.query(
                 "select id, created_at, login, account_invoice, description_order, sum_order, status" +
                         " from order_table where account_invoice = :account_invoice"
-                , params, new UsersResultSetExtractor())).filter(b -> b.getId() != 0);
+                , params, new OrderResultSetExtractor())).filter(b -> b.getId() != 0);
     }
 
     @Override
@@ -68,7 +64,7 @@ public class JdbcOrderRepository implements OrderRepository {
         return Optional.ofNullable(jdbc.query(
                 "select id, created_at, login, account_invoice, description_order, sum_order, status" +
                         " from order_table where login = :login"
-                , params, new UsersResultSetExtractor())).filter(b -> b.getId() != 0);
+                , params, new OrderResultSetExtractor())).filter(b -> b.getId() != 0);
     }
 
     @Override
@@ -90,10 +86,19 @@ public class JdbcOrderRepository implements OrderRepository {
         }
     }
 
+    private Optional<Order> findById(long id) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        return Optional.ofNullable(jdbc.query(
+                "select id, created_at, login, account_invoice, description_order, sum_order, status" +
+                        " from order_table where id = :id"
+                , params, new OrderResultSetExtractor()));
+    }
+
 
     @SuppressWarnings("ClassCanBeRecord")
     @RequiredArgsConstructor
-    private static class UsersResultSetExtractor implements ResultSetExtractor<Order> {
+    private static class OrderResultSetExtractor implements ResultSetExtractor<Order> {
 
         @Override
         public Order extractData(ResultSet resultSet) throws SQLException, DataAccessException {

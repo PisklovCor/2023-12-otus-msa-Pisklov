@@ -31,8 +31,4 @@ public class JmsMessageOrder {
 
     @JsonProperty("sumOrder")
     private Integer sumOrder;
-
-    @JsonProperty("status")
-    private String status;
-
 }
