@@ -57,7 +57,7 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("Будет создана запись о платеже");
         final PaymentDto paymentDto = paymentConverter.mapModelToDto(paymentRepository.create(payment));
         sendMessageJms(paymentDto);
-        paymentRepository.updatePaymentStatus(payment.getId(), WAIT);
+        paymentRepository.updatePaymentStatus(paymentDto.getId(), WAIT);
 
         return paymentDto;
     }
