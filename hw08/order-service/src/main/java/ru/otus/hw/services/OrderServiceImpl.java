@@ -8,7 +8,7 @@ import ru.otus.hw.converters.OrderConverter;
 import ru.otus.hw.dto.CreateOrderDto;
 import ru.otus.hw.dto.JmsMessageOrder;
 import ru.otus.hw.dto.OrderDto;
-import ru.otus.hw.dto.OrderStatus;
+import ru.otus.hw.dto.Status;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Order;
 import ru.otus.hw.repositories.OrderRepository;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.otus.hw.dto.OrderStatus.CREATED;
+import static ru.otus.hw.dto.Status.CREATED;
 
 @Slf4j
 @Service
@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto findByUUID(UUID uuid) {
         var order = orderRepository.findByUUID(uuid);
         return orderConverter.mapModelToDto(order.orElseThrow(
-                () -> new EntityNotFoundException("Order with uuid %d not found".formatted(uuid))));
+                () -> new EntityNotFoundException("Order with uuid %s not found".formatted(uuid))));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrderStatus(long id, OrderStatus status) {
+    public void updateOrderStatus(long id, Status status) {
         orderRepository.updateOrderStatus(id, status);
     }
 

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.hw.models.Order;
+import ru.otus.hw.models.Payment;
 
 import java.util.UUID;
 
@@ -13,26 +13,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.otus.hw.dto.Status.CANCELED;
 import static ru.otus.hw.dto.Status.CREATED;
 
-@DisplayName("Репозиторий на основе Jpa для работы с заказами ")
+@DisplayName("Репозиторий на основе Jpa для работы с платежами ")
 @JdbcTest
-@Import(JdbcOrderRepository.class)
-class JdbcOrderRepositoryTest {
+@Import(JdbcPaymentRepository.class)
+class JdbcPaymentRepositoryTest {
 
     @Autowired
-    private OrderRepository repository;
+    private PaymentRepository repository;
 
-    @DisplayName("должен создать заказ")
+    @DisplayName("должен создать платеж")
     @Test
     void create() {
 
-        Order order = new Order();
-        order.setLogin("test");
-        order.setAccountInvoice(UUID.randomUUID());
-        order.setDescriptionOrder("test description");
-        order.setSumOrder(5000);
-        order.setStatus(CREATED.toString());
+        Payment payment = new Payment();
+        payment.setOrderId(2);
+        payment.setLogin("test");
+        payment.setAccountInvoice(UUID.randomUUID());
+        payment.setDescriptionOrder("test description");
+        payment.setSumOrder(5000);
+        payment.setStatus(CREATED.toString());
 
-        var insertOrder =  repository.create(order);
+        var insertOrder =  repository.create(payment);
 
         assertThat(insertOrder).isNotNull()
                 .matches(o -> o.getId() > 0);
@@ -44,7 +45,7 @@ class JdbcOrderRepositoryTest {
 
     }
 
-    @DisplayName("должен загрузить заказ по uuid аккаунта")
+    @DisplayName("должен загрузить платеж по uuid аккаунта")
     @Test
     void findByUUID() {
         var order =  repository.findByUUID(UUID.fromString("32fff079-610b-466c-a094-241a98eca2f0"));
@@ -53,7 +54,7 @@ class JdbcOrderRepositoryTest {
         assertThat(order.get().getLogin()).isEqualTo("admin");
     }
 
-    @DisplayName("должен загрузить заказ по логину аккаунта")
+    @DisplayName("должен загрузить платеж по логину аккаунта")
     @Test
     void findByLogin() {
         var order =  repository.findByLogin("admin");
@@ -62,7 +63,7 @@ class JdbcOrderRepositoryTest {
         assertThat(order.get().getLogin()).isEqualTo("admin");
     }
 
-    @DisplayName("должен загрузить список всех заказов")
+    @DisplayName("должен загрузить список всех платежей")
     @Test
     void findAll() {
         var orderList = repository.findAll();
@@ -73,7 +74,7 @@ class JdbcOrderRepositoryTest {
     @DisplayName("должен обновить статус заказа")
     @Test
     void updateOrderStatus() {
-        repository.updateOrderStatus(1, CANCELED);
+        repository.updatePaymentStatus(1, CANCELED);
 
         var order =  repository.findByLogin("admin");
         assertThat(order).isPresent();

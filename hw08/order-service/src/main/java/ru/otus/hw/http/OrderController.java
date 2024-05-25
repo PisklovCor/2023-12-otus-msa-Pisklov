@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import ru.otus.hw.dto.CreateOrderDto;
 import ru.otus.hw.dto.OrderDto;
-import ru.otus.hw.dto.OrderStatus;
+import ru.otus.hw.dto.Status;
 import ru.otus.hw.services.OrderService;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public class OrderController {
     }
 
     @PutMapping("/api/order/update-status/{id}")
-    public ResponseEntity<?> getAllOrder(@PathVariable long id, @RequestBody OrderStatus status) {
+    public ResponseEntity<?> getAllOrder(@PathVariable long id, @RequestBody Status status) {
         orderService.updateOrderStatus(id, status);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

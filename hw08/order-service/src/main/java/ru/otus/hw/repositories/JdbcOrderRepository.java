@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.otus.hw.dto.OrderStatus;
+import ru.otus.hw.dto.Status;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Order;
 
@@ -75,7 +75,7 @@ public class JdbcOrderRepository implements OrderRepository {
     }
 
     @Override
-    public void updateOrderStatus(long id, OrderStatus status) {
+    public void updateOrderStatus(long id, Status status) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", id);
         params.addValue("status", status.toString());

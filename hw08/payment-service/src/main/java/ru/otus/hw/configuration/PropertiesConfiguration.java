@@ -16,18 +16,30 @@ public class PropertiesConfiguration {
     @NotBlank
     @NotEmpty
     @NotNull
-    private String destinationSend;
+    private String destinationSendStore;
 
     @NotBlank
     @NotEmpty
     @NotNull
-    private String destinationListener;
+    private String destinationListenerStore;
+
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    private String destinationSendOrder;
+
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    private String destinationListenerOrder;
 
     @PostConstruct
     private void init() {
         log.debug("----параметры----");
-        log.debug("destinationSend=[{}]", destinationSend);
-        log.debug("destinationListener=[{}]", destinationListener);
+        log.debug("destinationSend=[{}]", destinationSendStore);
+        log.debug("destinationListener=[{}]", destinationListenerStore);
+        log.debug("destinationSendOrder=[{}]", destinationSendOrder);
+        log.debug("destinationListenerOrder=[{}]", destinationListenerOrder);
         log.debug("---- ---- ----");
     }
 }

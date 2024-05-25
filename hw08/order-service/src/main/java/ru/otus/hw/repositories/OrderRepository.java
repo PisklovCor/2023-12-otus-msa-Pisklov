@@ -1,6 +1,6 @@
 package ru.otus.hw.repositories;
 
-import ru.otus.hw.dto.OrderStatus;
+import ru.otus.hw.dto.Status;
 import ru.otus.hw.models.Order;
 
 import java.util.List;
@@ -17,5 +17,5 @@ public interface OrderRepository {
 
     List<Order> findAll();
 
-    void updateOrderStatus(long id, OrderStatus status);
+    void updateOrderStatus(long id, Status status);
 }
