@@ -1,7 +1,7 @@
 package ru.otus.hw.services;
 
-import ru.otus.hw.dto.in.JmsMessageOrder;
-import ru.otus.hw.dto.in.JmsMessageStore;
+import ru.otus.hw.dto.in.JmsMessageOrderToPayment;
+import ru.otus.hw.dto.in.JmsMessageStoreToPayment;
 import ru.otus.hw.dto.in.PaymentDto;
 import ru.otus.hw.dto.Status;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface PaymentService {
 
-    PaymentDto create(JmsMessageOrder dto);
+    PaymentDto create(JmsMessageOrderToPayment dto);
 
     PaymentDto findByUUID(UUID uuid);
 
@@ -20,5 +20,5 @@ public interface PaymentService {
 
     void updatePaymentStatus(long id, Status status);
 
-    void updatePaymentStatusAndMessageSend(JmsMessageStore jmsMessageStore);
+    void updatePaymentStatusAndMessageSend(JmsMessageStoreToPayment jmsMessageStoreToPayment);
 }

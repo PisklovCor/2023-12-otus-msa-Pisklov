@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.configuration.PropertiesConfiguration;
-import ru.otus.hw.dto.out.JmsMessagePaymentToOrder;
-import ru.otus.hw.dto.out.JmsMessagePaymentToStore;
+import ru.otus.hw.dto.out.JmsMessageStoreToPayment;
+import ru.otus.hw.dto.out.JmsMessageStoreToDelivery;
 
 @Slf4j
 @Service
@@ -18,13 +18,13 @@ public class ArtemisProduceSender {
     private final PropertiesConfiguration configuration;
 
 
-    public void sendMessageOrder(JmsMessagePaymentToOrder message) {
-        jmsTemplate.convertAndSend(configuration.getDestinationSendOrder(), message);
+    public void sendMessagePayment(JmsMessageStoreToPayment message) {
+        jmsTemplate.convertAndSend(configuration.getDestinationSendPayment(), message);
         log.info("Сообщение отправлено: " + message);
     }
 
-    public void sendMessageStore(JmsMessagePaymentToStore message) {
-        jmsTemplate.convertAndSend(configuration.getDestinationSendStore(), message);
+    public void sendMessageDelivery(JmsMessageStoreToDelivery message) {
+        jmsTemplate.convertAndSend(configuration.getDestinationSendDelivery(), message);
         log.info("Сообщение отправлено: " + message);
     }
 }

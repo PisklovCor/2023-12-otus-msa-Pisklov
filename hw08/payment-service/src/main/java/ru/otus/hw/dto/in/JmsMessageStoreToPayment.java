@@ -10,7 +10,7 @@ import ru.otus.hw.dto.Status;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JmsMessageStore {
+public class JmsMessageStoreToPayment {
 
     @JsonProperty("paymentId")
     private long paymentId;

@@ -1,4 +1,4 @@
-package ru.otus.hw.dto;
+package ru.otus.hw.dto.out;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +12,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JmsMessageOrder {
+public class JmsMessagePaymentToStore {
+
+    @JsonProperty("paymentId")
+    private long paymentId;
 
     @JsonProperty("orderId")
     private long orderId;

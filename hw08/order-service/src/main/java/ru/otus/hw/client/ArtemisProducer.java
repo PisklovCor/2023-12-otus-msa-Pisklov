@@ -10,8 +10,8 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.configuration.PropertiesConfiguration;
-import ru.otus.hw.dto.JmsMessageOrder;
-import ru.otus.hw.dto.JmsMessagePayment;
+import ru.otus.hw.dto.JmsMessageOrderToPayment;
+import ru.otus.hw.dto.JmsMessagePaymentToOrder;
 import ru.otus.hw.repositories.OrderRepository;
 
 import static ru.otus.hw.dto.Status.WAIT;
@@ -31,7 +31,7 @@ public class ArtemisProducer {
 
     private final ObjectMapper objectMapper;
 
-    public void sendMessage(JmsMessageOrder message) {
+    public void sendMessage(JmsMessageOrderToPayment message) {
         jmsTemplate.convertAndSend(configuration.getDestinationSend(), message);
         log.info("Сообщение отправлено: " + message);
         orderRepository.updateOrderStatus(message.getOrderId(), WAIT);
@@ -41,15 +41,15 @@ public class ArtemisProducer {
     public void receiveMessage(Message message) throws JsonProcessingException {
         log.info("Получено сообщение: " + message);
 
-        JmsMessagePayment jmsMessagePayment = objectMapper.readValue(
-                ((ActiveMQTextMessage) message).getText(), JmsMessagePayment.class);
+        JmsMessagePaymentToOrder jmsMessagePaymentToOrder = objectMapper.readValue(
+                ((ActiveMQTextMessage) message).getText(), JmsMessagePaymentToOrder.class);
 
-        if (jmsMessagePayment.getStatus() == CONFIRMED) {
+        if (jmsMessagePaymentToOrder.getStatus() == CONFIRMED) {
             log.info("Saga завершилась успешно, сообщение: " + message);
-            orderRepository.updateOrderStatus(jmsMessagePayment.getOrderId(), CONFIRMED);
+            orderRepository.updateOrderStatus(jmsMessagePaymentToOrder.getOrderId(), CONFIRMED);
         } else {
             log.warn("Saga откатилась, сообщение: " + message);
-            orderRepository.updateOrderStatus(jmsMessagePayment.getOrderId(), CANCELED);
+            orderRepository.updateOrderStatus(jmsMessagePaymentToOrder.getOrderId(), CANCELED);
         }
     }
 }

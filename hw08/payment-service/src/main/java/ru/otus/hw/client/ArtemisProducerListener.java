@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.artemis.jms.client.ActiveMQTextMessage;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
-import ru.otus.hw.dto.in.JmsMessageOrder;
-import ru.otus.hw.dto.in.JmsMessageStore;
+import ru.otus.hw.dto.in.JmsMessageOrderToPayment;
+import ru.otus.hw.dto.in.JmsMessageStoreToPayment;
 import ru.otus.hw.services.PaymentService;
 
 import static ru.otus.hw.dto.Status.CONFIRMED;
@@ -27,22 +27,22 @@ public class ArtemisProducerListener {
     public void receiveMessageOrder(Message message) throws JsonProcessingException {
         log.info("Получено сообщение: " + message);
         paymentService.create(objectMapper.readValue(
-                ((ActiveMQTextMessage) message).getText(), JmsMessageOrder.class));
+                ((ActiveMQTextMessage) message).getText(), JmsMessageOrderToPayment.class));
     }
 
     @JmsListener(destination = "${application.destinationListenerStore}")
     public void receiveMessageStore(Message message) throws JsonProcessingException {
         log.info("Получено сообщение: " + message);
 
-        JmsMessageStore jmsMessageStore = objectMapper.readValue(
-                ((ActiveMQTextMessage) message).getText(), JmsMessageStore.class);
+        JmsMessageStoreToPayment jmsMessageStoreToPayment = objectMapper.readValue(
+                ((ActiveMQTextMessage) message).getText(), JmsMessageStoreToPayment.class);
 
-        if (jmsMessageStore.getStatus() == CONFIRMED) {
+        if (jmsMessageStoreToPayment.getStatus() == CONFIRMED) {
             log.info("Saga завершилась успешно, сообщение: " + message);
-            paymentService.updatePaymentStatusAndMessageSend(jmsMessageStore);
+            paymentService.updatePaymentStatusAndMessageSend(jmsMessageStoreToPayment);
         } else {
             log.warn("Saga откатилась, сообщение: " + message);
-            paymentService.updatePaymentStatusAndMessageSend(jmsMessageStore);
+            paymentService.updatePaymentStatusAndMessageSend(jmsMessageStoreToPayment);
         }
 
     }

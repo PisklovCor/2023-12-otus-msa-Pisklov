@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.client.ArtemisProduceSender;
 import ru.otus.hw.converters.PaymentConverter;
-import ru.otus.hw.dto.in.JmsMessageOrder;
-import ru.otus.hw.dto.in.JmsMessageStore;
+import ru.otus.hw.dto.in.JmsMessageOrderToPayment;
+import ru.otus.hw.dto.in.JmsMessageStoreToPayment;
 import ru.otus.hw.dto.in.PaymentDto;
 import ru.otus.hw.dto.Status;
-import ru.otus.hw.dto.out.JmsMessagePaymentOrder;
-import ru.otus.hw.dto.out.JmsMessagePaymentStore;
+import ru.otus.hw.dto.out.JmsMessagePaymentToOrder;
+import ru.otus.hw.dto.out.JmsMessagePaymentToStore;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Account;
 import ru.otus.hw.models.Payment;
@@ -39,7 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final ArtemisProduceSender artemisProduceSender;
 
     @Override
-    public PaymentDto create(JmsMessageOrder dto) {
+    public PaymentDto create(JmsMessageOrderToPayment dto) {
 
         log.info("Получен платеж от пользователя [{}] на сумму [{}]", dto.getLogin(), dto.getSumOrder());
 
@@ -91,21 +91,21 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void updatePaymentStatusAndMessageSend(JmsMessageStore jmsMessageStore) {
-        updatePaymentStatus(jmsMessageStore.getPaymentId(), jmsMessageStore.getStatus());
+    public void updatePaymentStatusAndMessageSend(JmsMessageStoreToPayment jmsMessageStoreToPayment) {
+        updatePaymentStatus(jmsMessageStoreToPayment.getPaymentId(), jmsMessageStoreToPayment.getStatus());
         log.info("Состояние платежа обновлено");
-        JmsMessagePaymentOrder message = new JmsMessagePaymentOrder();
-        message.setOrderId(jmsMessageStore.getPaymentId());
-        message.setStatus(jmsMessageStore.getStatus());
-        if (jmsMessageStore.getStatus() == CONFIRMED) {
+        JmsMessagePaymentToOrder message = new JmsMessagePaymentToOrder();
+        message.setOrderId(jmsMessageStoreToPayment.getOrderId());
+        message.setStatus(jmsMessageStoreToPayment.getStatus());
+        if (jmsMessageStoreToPayment.getStatus() == CONFIRMED) {
             log.info("Saga завершилась успешно, сообщение: " + message);
             artemisProduceSender.sendMessageOrder(message);
         } else {
             log.warn("Saga откатилась, сообщение: " + message);
 
-            Payment payment = paymentRepository.findById(jmsMessageStore.getPaymentId()).orElseThrow(
+            Payment payment = paymentRepository.findById(jmsMessageStoreToPayment.getPaymentId()).orElseThrow(
                     () -> new EntityNotFoundException("Payment with id %s not found"
-                            .formatted(jmsMessageStore.getPaymentId())));
+                            .formatted(jmsMessageStoreToPayment.getPaymentId())));
 
             Account account = accountService.findByLogin(payment.getLogin());
             int originalBalance = account.getBalance();
@@ -116,7 +116,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
-    private boolean checkingAccountBalance(JmsMessageOrder dto) {
+    private boolean checkingAccountBalance(JmsMessageOrderToPayment dto) {
         Account account = accountService.findByLogin(dto.getLogin());
         Integer balance = account.getBalance();
         Integer sumOrder = dto.getSumOrder();
@@ -127,7 +127,7 @@ public class PaymentServiceImpl implements PaymentService {
             return true;
         } else {
             log.warn("Недостаточно денег, отменяем заказ");
-            JmsMessagePaymentOrder message = new JmsMessagePaymentOrder();
+            JmsMessagePaymentToOrder message = new JmsMessagePaymentToOrder();
             message.setOrderId(dto.getOrderId());
             message.setStatus(CANCELED);
             artemisProduceSender.sendMessageOrder(message);
@@ -138,16 +138,16 @@ public class PaymentServiceImpl implements PaymentService {
     private void sendMessageJms(PaymentDto paymentDto) {
 
         try {
-            JmsMessagePaymentStore jmsMessagePaymentStore = new JmsMessagePaymentStore();
-            jmsMessagePaymentStore.setPaymentId(paymentDto.getId());
-            jmsMessagePaymentStore.setOrderId(paymentDto.getOrderId());
-            jmsMessagePaymentStore.setCreatedAtOrder(paymentDto.getCreatedAt());
-            jmsMessagePaymentStore.setLogin(paymentDto.getLogin());
-            jmsMessagePaymentStore.setAccountInvoice(paymentDto.getAccountInvoice());
-            jmsMessagePaymentStore.setDescriptionOrder(paymentDto.getDescriptionOrder());
-            jmsMessagePaymentStore.setSumOrder(paymentDto.getSumOrder());
-            artemisProduceSender.sendMessageStore(jmsMessagePaymentStore);
-            log.info("Сообщение успешно отправлено в брокер [{}]", jmsMessagePaymentStore);
+            JmsMessagePaymentToStore jmsMessagePaymentToStore = new JmsMessagePaymentToStore();
+            jmsMessagePaymentToStore.setPaymentId(paymentDto.getId());
+            jmsMessagePaymentToStore.setOrderId(paymentDto.getOrderId());
+            jmsMessagePaymentToStore.setCreatedAtOrder(paymentDto.getCreatedAt());
+            jmsMessagePaymentToStore.setLogin(paymentDto.getLogin());
+            jmsMessagePaymentToStore.setAccountInvoice(paymentDto.getAccountInvoice());
+            jmsMessagePaymentToStore.setDescriptionOrder(paymentDto.getDescriptionOrder());
+            jmsMessagePaymentToStore.setSumOrder(paymentDto.getSumOrder());
+            artemisProduceSender.sendMessageStore(jmsMessagePaymentToStore);
+            log.info("Сообщение успешно отправлено в брокер [{}]", jmsMessagePaymentToStore);
         } catch (Exception e) {
             log.error("Failed to send message to broker:" + e.getMessage());
         }

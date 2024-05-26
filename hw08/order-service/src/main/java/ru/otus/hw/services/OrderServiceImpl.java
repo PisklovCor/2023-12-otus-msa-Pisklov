@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.hw.client.ArtemisProducer;
 import ru.otus.hw.converters.OrderConverter;
 import ru.otus.hw.dto.CreateOrderDto;
-import ru.otus.hw.dto.JmsMessageOrder;
+import ru.otus.hw.dto.JmsMessageOrderToPayment;
 import ru.otus.hw.dto.OrderDto;
 import ru.otus.hw.dto.Status;
 import ru.otus.hw.exceptions.EntityNotFoundException;
@@ -82,16 +82,16 @@ public class OrderServiceImpl implements OrderService {
     private void sendMessageJms(OrderDto orderDto) {
 
         try {
-            JmsMessageOrder jmsMessageOrder = new JmsMessageOrder();
-            jmsMessageOrder.setOrderId(orderDto.getId());
-            jmsMessageOrder.setCreatedAtOrder(orderDto.getCreatedAt());
-            jmsMessageOrder.setLogin(orderDto.getLogin());
-            jmsMessageOrder.setAccountInvoice(orderDto.getAccountInvoice());
-            jmsMessageOrder.setDescriptionOrder(orderDto.getDescriptionOrder());
-            jmsMessageOrder.setSumOrder(orderDto.getSumOrder());
+            JmsMessageOrderToPayment jmsMessageOrderToPayment = new JmsMessageOrderToPayment();
+            jmsMessageOrderToPayment.setOrderId(orderDto.getId());
+            jmsMessageOrderToPayment.setCreatedAtOrder(orderDto.getCreatedAt());
+            jmsMessageOrderToPayment.setLogin(orderDto.getLogin());
+            jmsMessageOrderToPayment.setAccountInvoice(orderDto.getAccountInvoice());
+            jmsMessageOrderToPayment.setDescriptionOrder(orderDto.getDescriptionOrder());
+            jmsMessageOrderToPayment.setSumOrder(orderDto.getSumOrder());
 
-            artemisProducer.sendMessage(jmsMessageOrder);
-            log.info("Сообщение успешно отправлено в брокер [{}]", jmsMessageOrder);
+            artemisProducer.sendMessage(jmsMessageOrderToPayment);
+            log.info("Сообщение успешно отправлено в брокер [{}]", jmsMessageOrderToPayment);
         } catch (Exception e) {
             log.error("Failed to send message to broker:" + e.getMessage());
         }

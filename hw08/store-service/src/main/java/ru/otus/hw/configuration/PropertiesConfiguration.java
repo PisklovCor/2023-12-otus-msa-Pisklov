@@ -16,30 +16,30 @@ public class PropertiesConfiguration {
     @NotBlank
     @NotEmpty
     @NotNull
-    private String destinationSendStore;
+    private String destinationSendDelivery;
 
     @NotBlank
     @NotEmpty
     @NotNull
-    private String destinationListenerStore;
+    private String destinationListenerDelivery;
 
     @NotBlank
     @NotEmpty
     @NotNull
-    private String destinationSendOrder;
+    private String destinationSendPayment;
 
     @NotBlank
     @NotEmpty
     @NotNull
-    private String destinationListenerOrder;
+    private String destinationListenerPayment;
 
     @PostConstruct
     private void init() {
         log.debug("----параметры----");
-        log.debug("destinationSendStore=[{}]", destinationSendStore);
-        log.debug("destinationListenerStore=[{}]", destinationListenerStore);
-        log.debug("destinationSendOrder=[{}]", destinationSendOrder);
-        log.debug("destinationListenerOrder=[{}]", destinationListenerOrder);
+        log.debug("destinationSendDelivery=[{}]", destinationSendDelivery);
+        log.debug("destinationListenerDelivery=[{}]", destinationListenerDelivery);
+        log.debug("destinationSendPayment=[{}]", destinationSendPayment);
+        log.debug("destinationListenerPayment=[{}]", destinationListenerPayment);
         log.debug("---- ---- ----");
     }
 }
