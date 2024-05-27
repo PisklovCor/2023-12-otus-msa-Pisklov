@@ -21,6 +21,9 @@ public class JmsMessageDeliveryToStore {
     @JsonProperty("paymentId")
     private long paymentId;
 
+    @JsonProperty("orderId")
+    private long orderId;
+
     @JsonProperty("status")
     private Status status;
 

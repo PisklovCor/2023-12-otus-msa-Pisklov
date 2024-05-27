@@ -38,6 +38,7 @@ public class DeliveryServiceImpl implements DeliveryService {
             JmsMessageDeliveryToStore jmsMessageDeliveryToStore = new JmsMessageDeliveryToStore();
             jmsMessageDeliveryToStore.setStoreId(message.getStoreId());
             jmsMessageDeliveryToStore.setPaymentId(message.getPaymentId());
+            jmsMessageDeliveryToStore.setOrderId(message.getOrderId());
             jmsMessageDeliveryToStore.setStatus(CANCELED);
             artemisProduceSender.sendMessageStore(jmsMessageDeliveryToStore);
             log.warn("Saga откатилась, сообщение: " + jmsMessageDeliveryToStore);
@@ -96,6 +97,7 @@ public class DeliveryServiceImpl implements DeliveryService {
             JmsMessageDeliveryToStore jmsMessageDeliveryToStore = new JmsMessageDeliveryToStore();
             jmsMessageDeliveryToStore.setStoreId(delivery.getStoreId());
             jmsMessageDeliveryToStore.setPaymentId(delivery.getPaymentId());
+            jmsMessageDeliveryToStore.setOrderId(delivery.getOrderId());
             jmsMessageDeliveryToStore.setStatus(CONFIRMED);
             artemisProduceSender.sendMessageStore(jmsMessageDeliveryToStore);
             log.info("Сообщение успешно отправлено в брокер [{}]", jmsMessageDeliveryToStore);

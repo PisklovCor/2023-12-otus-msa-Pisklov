@@ -97,6 +97,7 @@ public class StoreServiceImpl implements StoreService {
         log.info("Состояние платежа обновлено");
         JmsMessageStoreToPayment message = new JmsMessageStoreToPayment();
         message.setPaymentId(jmsMessageDeliveryToStore.getPaymentId());
+        message.setOrderId(jmsMessageDeliveryToStore.getOrderId());
         message.setStatus(jmsMessageDeliveryToStore.getStatus());
         if (jmsMessageDeliveryToStore.getStatus() == CONFIRMED) {
             log.info("Saga завершилась успешно, сообщение: " + message);
