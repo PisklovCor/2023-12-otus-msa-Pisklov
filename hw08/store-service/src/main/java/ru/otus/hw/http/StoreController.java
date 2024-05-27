@@ -28,22 +28,22 @@ public class StoreController {
     }
 
     @GetMapping("/api/store/uuid/{uuid}")
-    public ResponseEntity<Store> getPaymentUUID(@PathVariable UUID uuid) {
+    public ResponseEntity<Store> getStoreUUID(@PathVariable UUID uuid) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(storeService.findByUUID(uuid));
     }
 
     @GetMapping("/api/store/login/{login}")
-    public ResponseEntity<Store> getPaymentLogin(@PathVariable String login) {
+    public ResponseEntity<Store> getStoreLogin(@PathVariable String login) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(storeService.findByLogin(login));
     }
 
     @GetMapping("/api/store/all-store")
-    public ResponseEntity<List<Store>> getAllPayment() {
+    public ResponseEntity<List<Store>> getAllStore() {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(storeService.findAll());
     }
 
     @PutMapping("/api/store/update-status/{id}")
-    public ResponseEntity<?> getAllOrder(@PathVariable long id, @RequestBody Status status) {
+    public ResponseEntity<?> getAllStore(@PathVariable long id, @RequestBody Status status) {
         storeService.updateStoreStatus(id, status);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

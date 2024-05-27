@@ -28,22 +28,22 @@ public class DeliveryController {
     }
 
     @GetMapping("/api/delivery/uuid/{uuid}")
-    public ResponseEntity<Delivery> getPaymentUUID(@PathVariable UUID uuid) {
+    public ResponseEntity<Delivery> getDeliveryUUID(@PathVariable UUID uuid) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(deliveryService.findByUUID(uuid));
     }
 
     @GetMapping("/api/delivery/login/{login}")
-    public ResponseEntity<Delivery> getPaymentLogin(@PathVariable String login) {
+    public ResponseEntity<Delivery> getDeliveryLogin(@PathVariable String login) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(deliveryService.findByLogin(login));
     }
 
-    @GetMapping("/api/delivery/all-store")
-    public ResponseEntity<List<Delivery>> getAllPayment() {
+    @GetMapping("/api/delivery/all-delivery")
+    public ResponseEntity<List<Delivery>> getAllDelivery() {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(deliveryService.findAll());
     }
 
-    @PutMapping("/api/store/update-status/{id}")
-    public ResponseEntity<?> getAllOrder(@PathVariable long id, @RequestBody Status status) {
+    @PutMapping("/api/delivery/update-status/{id}")
+    public ResponseEntity<?> getAllDelivery(@PathVariable long id, @RequestBody Status status) {
         deliveryService.updateDeliveryStatus(id, status);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

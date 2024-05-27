@@ -43,7 +43,7 @@ public class PaymentController {
     }
 
     @PutMapping("/api/payment/update-status/{id}")
-    public ResponseEntity<?> getAllOrder(@PathVariable long id, @RequestBody Status status) {
+    public ResponseEntity<?> getAllPayment(@PathVariable long id, @RequestBody Status status) {
         paymentService.updatePaymentStatus(id, status);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

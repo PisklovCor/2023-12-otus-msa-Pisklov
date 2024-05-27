@@ -31,7 +31,7 @@ public class AccountController {
     }
 
     @GetMapping("/api/account/login/{login}")
-    public ResponseEntity<Account> getPaymentLogin(@PathVariable String login) {
+    public ResponseEntity<Account> getAccountLogin(@PathVariable String login) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(accountService.findByLogin(login));
     }
 
@@ -41,7 +41,7 @@ public class AccountController {
     }
 
     @PutMapping("/api/account/update-account")
-    public ResponseEntity<?> getAllOrder(@RequestBody Account account) {
+    public ResponseEntity<?> getAllAccount(@RequestBody Account account) {
         accountService.updateAccount(account);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
