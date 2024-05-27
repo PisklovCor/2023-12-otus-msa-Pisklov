@@ -1,4 +1,4 @@
-package ru.otus.hw.dto.out;
+package ru.otus.hw.dto.in;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

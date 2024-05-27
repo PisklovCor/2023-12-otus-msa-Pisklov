@@ -13,7 +13,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JmsMessageStoreToDelivery {
+public class JmsMessageDeliveryToStore {
 
     @JsonProperty("storeId")
     private long storeId;
@@ -21,15 +21,7 @@ public class JmsMessageStoreToDelivery {
     @JsonProperty("paymentId")
     private long paymentId;
 
-    @JsonProperty("orderId")
-    private long orderId;
+    @JsonProperty("status")
+    private Status status;
 
-    @JsonProperty("login")
-    private String login;
-
-    @JsonProperty("descriptionOrder")
-    private String descriptionOrder;
-
-    @JsonProperty("sumOrder")
-    private Integer sumOrder;
 }

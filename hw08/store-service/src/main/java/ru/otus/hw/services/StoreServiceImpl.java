@@ -116,6 +116,7 @@ public class StoreServiceImpl implements StoreService {
             jmsMessageStoreToDelivery.setOrderId(store.getOrderId());
             jmsMessageStoreToDelivery.setLogin(store.getLogin());
             jmsMessageStoreToDelivery.setDescriptionOrder(store.getDescriptionOrder());
+            jmsMessageStoreToDelivery.setSumOrder(store.getSumOrder());
             artemisProduceSender.sendMessageDelivery(jmsMessageStoreToDelivery);
             log.info("Сообщение успешно отправлено в брокер [{}]", jmsMessageStoreToDelivery);
         } catch (Exception e) {
