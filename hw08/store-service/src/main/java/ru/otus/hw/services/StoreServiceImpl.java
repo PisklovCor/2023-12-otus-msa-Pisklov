@@ -94,7 +94,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void updateStoreStatusAndMessageSend(JmsMessageDeliveryToStore jmsMessageDeliveryToStore) {
         updateStoreStatus(jmsMessageDeliveryToStore.getStoreId(), jmsMessageDeliveryToStore.getStatus());
-        log.info("Состояние платежа обновлено");
+        log.info("Состояние товара обновлено");
         JmsMessageStoreToPayment message = new JmsMessageStoreToPayment();
         message.setPaymentId(jmsMessageDeliveryToStore.getPaymentId());
         message.setOrderId(jmsMessageDeliveryToStore.getOrderId());
@@ -113,7 +113,7 @@ public class StoreServiceImpl implements StoreService {
         try {
             JmsMessageStoreToDelivery jmsMessageStoreToDelivery = new JmsMessageStoreToDelivery();
             jmsMessageStoreToDelivery.setStoreId(store.getId());
-            jmsMessageStoreToDelivery.setPaymentId(store.getId());
+            jmsMessageStoreToDelivery.setPaymentId(store.getPaymentId());
             jmsMessageStoreToDelivery.setOrderId(store.getOrderId());
             jmsMessageStoreToDelivery.setLogin(store.getLogin());
             jmsMessageStoreToDelivery.setDescriptionOrder(store.getDescriptionOrder());
