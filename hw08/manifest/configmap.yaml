@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hw-app-config
+data:
+  datasourceUrl: "jdbc:postgresql://postgres-svc:5432/postgres"
+  artemisUrl   : "tcp://jms-broke-svc:61616"

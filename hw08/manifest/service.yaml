@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hw-service-order
+
+spec:
+  selector:
+    env: hw-order
+  ports:
+    - protocol  : TCP
+      port      : 80
+      targetPort: 8001
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hw-service-payment
+
+spec:
+  selector:
+    env: hw-payment
+  ports:
+    - protocol  : TCP
+      port      : 80
+      targetPort: 8002
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hw-service-store
+
+spec:
+  selector:
+    env: hw-store
+  ports:
+    - protocol  : TCP
+      port      : 80
+      targetPort: 8003
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hw-service-delivery
+
+spec:
+  selector:
+    env: hw-delivery
+  ports:
+    - protocol  : TCP
+      port      : 80
+      targetPort: 8004
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-svc
+
+spec:
+  selector:
+    env: postgres-app
+  ports:
+    - port      : 5432
+      targetPort: 5432
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jms-broke-svc
+
+spec:
+  selector:
+    env: jms-broker-app
+  ports:
+    - protocol  : TCP
+      port      : 61616
+      targetPort: 61616

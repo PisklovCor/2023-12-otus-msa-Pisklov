@@ -1,0 +1,544 @@
+{
+	"info": {
+		"_postman_id": "03c5434f-ad8e-4775-9e69-369da7298f1b",
+		"name": "hw08_collection_successful_path",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34799908"
+	},
+	"item": [
+		{
+			"name": "Создание аккаунта",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"console.log(\"Set environment login=\" + responseData.login);\r",
+							"pm.environment.set(\"login\", responseData.login);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"    pm.expect(responseData).to.have.property('createdAt');\r",
+							"    pm.expect(responseData).to.have.property('login');\r",
+							"    pm.expect(responseData).to.have.property('balance');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Login is a non-empty string\", function () {\r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.login).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Login should be a non-empty string\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"test_postman\",\r\n    \"balance\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/account/create",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Пополнение баланса",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 202\", function () {\r",
+							"    pm.response.to.have.status(202);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"{{login}}\",\r\n    \"balance\": 10000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/account/update-account",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"update-account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка баланса",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();",
+							"",
+							"",
+							"console.log(\"Set environment balance=\" + responseData.balance);",
+							"pm.environment.set(\"balance\", responseData.balance);",
+							"",
+							"",
+							"pm.test(\"Response status code is 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 400ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the response schema for required fields\", function () {",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('id');",
+							"    pm.expect(responseData).to.have.property('createdAt');",
+							"    pm.expect(responseData).to.have.property('login');",
+							"    pm.expect(responseData).to.have.property('balance');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/account/login/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"login",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Создание заказа",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"console.log(\"Set environment orderId=\" + responseData.id);\r",
+							"pm.environment.set(\"orderId\", responseData.id);\r",
+							"\r",
+							"\r",
+							"console.log(\"Set environment sumOrder=\" + responseData.sumOrder);\r",
+							"pm.environment.set(\"sumOrder\", responseData.sumOrder);\r",
+							"\r",
+							"pm.test(\"Order status is CREATED\", function () {\r",
+							"    pm.expect(responseData.status).to.equal(\"CREATED\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.include.all.keys('id', 'createdAt', 'login', 'accountInvoice', 'descriptionOrder', 'sumOrder', 'status');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"SumOrder is a non-negative integer\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.sumOrder).to.be.a('number');\r",
+							"    pm.expect(responseData.sumOrder).to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"{{login}}\",\r\n    \"descriptionOrder\": \"postman_order\",\r\n    \"sumOrder\": 50\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/order/create-order",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create-order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Деньги сняли",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Writing off money\", function () {\r",
+							"  pm.expect(responseData.balance).to.equal(pm.environment.get(\"balance\") - pm.environment.get(\"sumOrder\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 202\", function () {\r",
+							"  pm.expect(pm.response.code).to.equal(202);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields - id, createdAt, login, and balance\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"    pm.expect(responseData).to.have.property('createdAt');\r",
+							"    pm.expect(responseData).to.have.property('login');\r",
+							"    pm.expect(responseData).to.have.property('balance');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/account/login/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"login",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Платеж создан",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Payment status is CONFIRMED\", function () {\r",
+							"    pm.expect(responseData.status).to.equal(\"CONFIRMED\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id Order matches\", function () {\r",
+							"    pm.expect(responseData.orderId).to.equal(pm.environment.get(\"orderId\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 202\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(202);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"SumOrder is a non-negative integer\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.sumOrder).to.be.a('number');\r",
+							"    pm.expect(responseData.sumOrder).to.be.at.least(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/payment/login/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"payment",
+						"login",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Товар зарезервирован",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Store status is CONFIRMED\", function () {\r",
+							"    pm.expect(responseData.status).to.equal(\"CONFIRMED\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id Order matches\", function () {\r",
+							"    pm.expect(responseData.orderId).to.equal(pm.environment.get(\"orderId\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 202\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(202);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/store/login/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"store",
+						"login",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Доставка оформлена",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Delivery status is CONFIRMED\", function () {\r",
+							"    pm.expect(responseData.status).to.equal(\"CONFIRMED\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id Order matches\", function () {\r",
+							"    pm.expect(responseData.orderId).to.equal(pm.environment.get(\"orderId\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 202\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(202);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id is a non-negative integer\", function () {\r",
+							"  pm.expect(responseData.id).to.be.a('number');\r",
+							"  pm.expect(responseData.id).to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/delivery/login/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"delivery",
+						"login",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Заказ оформлен",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Order status is CONFIRMED\", function () {\r",
+							"    pm.expect(responseData.status).to.equal(\"CONFIRMED\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/order/login/{{login}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"login",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

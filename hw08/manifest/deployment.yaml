@@ -1,0 +1,228 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw-deployment-order
+  labels:
+    app: hw-app-k8s-a
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: hw-order
+  template:
+    metadata:
+      labels:
+        env: hw-order
+    spec:
+      containers:
+      - name: hw08-order-service
+        image: pisklovcor/hw-08-order-service-docker:dockerfile
+        ports:
+          - containerPort: 8001
+        env:
+          - name: spring.datasource.url
+            valueFrom:
+              configMapKeyRef:
+                name: hw-app-config
+                key: datasourceUrl
+          - name: spring.artemis.broker-url
+            valueFrom:
+              configMapKeyRef:
+                name: hw-app-config
+                key: artemisUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw-deployment-payment
+  labels:
+    app: hw-app-k8s-s
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: hw-payment
+  template:
+    metadata:
+      labels:
+        env: hw-payment
+    spec:
+      containers:
+        - name: hw08-payment-service
+          image: pisklovcor/hw-08-payment-service-docker:dockerfile
+          ports:
+            - containerPort: 8002
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: hw-app-config
+                  key: datasourceUrl
+            - name: spring.artemis.broker-url
+              valueFrom:
+                configMapKeyRef:
+                  name: hw-app-config
+                  key: artemisUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw-deployment-store
+  labels:
+    app: hw-app-k8s-s
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: hw-store
+  template:
+    metadata:
+      labels:
+        env: hw-store
+    spec:
+      containers:
+        - name: hw08-store-service
+          image: pisklovcor/hw-08-store-service-docker:dockerfile
+          ports:
+            - containerPort: 8003
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: hw-app-config
+                  key: datasourceUrl
+            - name: spring.artemis.broker-url
+              valueFrom:
+                configMapKeyRef:
+                  name: hw-app-config
+                  key: artemisUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw-deployment-delivery
+  labels:
+    app: hw-app-k8s-s
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: hw-delivery
+  template:
+    metadata:
+      labels:
+        env: hw-delivery
+    spec:
+      containers:
+        - name: hw08-delivery
+          image: pisklovcor/hw-08-delivery-service-docker:dockerfile
+          ports:
+            - containerPort: 8004
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: hw-app-config
+                  key: datasourceUrl
+            - name: spring.artemis.broker-url
+              valueFrom:
+                configMapKeyRef:
+                  name: hw-app-config
+                  key: artemisUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: hw-postgres
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: postgres-app
+  template:
+    metadata:
+      labels:
+        env: postgres-app
+    spec:
+      containers:
+        - name  : postgres-13
+          image : postgres:13.3
+          ports :
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key : postgresDb
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key : postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key : postgresPassword
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jms-broker
+  labels:
+    app: hw-jms-broker
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: jms-broker-app
+  template:
+    metadata:
+      labels:
+        env: jms-broker-app
+    spec:
+      containers:
+        - name  : hw-broker
+          image : vromero/activemq-artemis:2.10.1
+          ports :
+            - containerPort: 61616
+          env:
+            - name: ARTEMIS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key : artemisUsername
+            - name: ARTEMIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key : artemisPassword
+            - name: ARTEMIS_MAX_MEMORY
+              value: 1G
+            - name: BROKER_CONFIG_GLOBAL_MAX_SIZE
+              value: "200000000"
+            - name: ARTEMIS_PERF_JOURNAL
+              value: ALWAYS
+            - name: ENABLE_JMX_EXPORTER
+              value: "true"
+            - name: JAVA_OPTS
+              value: -XX:NativeMemoryTracking=summary

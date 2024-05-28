@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hw-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+        - path: /api/order/.*
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: hw-service-order
+              port:
+                number: 80
+        - path: /api/account/.*
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: hw-service-payment
+              port:
+                number: 80
+        - path: /api/payment/.*
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: hw-service-payment
+              port:
+                number: 80
+        - path: /api/store/.*
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: hw-service-store
+              port:
+                number: 80
+        - path: /api/delivery/.*
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: hw-service-delivery
+              port:
+                number: 80
