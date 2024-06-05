@@ -27,4 +27,5 @@
 - Notification service
   - Выполняет отправку уведомлений на электронную почту пользователям.
 
-##  Контракты взаимодействия (Sequence диаграмма)
+## Контракты взаимодействия (Sequence диаграмма):
+![lib-mermaid-sequence](README.assets/lib-mermaid-sequence.png)
