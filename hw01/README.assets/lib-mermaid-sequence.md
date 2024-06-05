@@ -50,6 +50,9 @@ participant Notification service
     User->>+Gateway: POST /api/book/bid {BookDto}
     Note over User,Gateway: Оставить запрос на книгу 
     Gateway->>+Library service: POST /api/book/bid {BookDto}
+    Library service->>+Order service: POST /api/order {OrderDto}
+    Note over Library service,Order service: Создать заказ на новую книгу 
+    Order service->>-Library service: 201 Created {OrderDto}
     Library service->>+Message Broker: publish
     Message Broker->>-Notification service: consume
     activate Notification service
