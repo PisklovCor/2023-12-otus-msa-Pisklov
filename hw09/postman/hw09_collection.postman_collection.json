@@ -1,0 +1,494 @@
+{
+	"info": {
+		"_postman_id": "c09960a7-b482-44b5-8d1f-1c84ff055533",
+		"name": "hw09_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34799908"
+	},
+	"item": [
+		{
+			"name": "Получить список всех книг",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();",
+							"",
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 400ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the structure of the response - id, title, author, and rating\", function () {",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function (book) {",
+							"        pm.expect(book).to.be.an('object');",
+							"        pm.expect(book).to.have.property('id');",
+							"        pm.expect(book.id).to.be.a('number');",
+							"",
+							"        pm.expect(book).to.have.property('title');",
+							"        pm.expect(book.title).to.be.a('string');",
+							"",
+							"        pm.expect(book).to.have.property('author');",
+							"        pm.expect(book.author).to.be.a('string');",
+							"",
+							"        pm.expect(book).to.have.property('rating');",
+							"        pm.expect(book.rating).to.be.a('number');",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate response properties\", function () {",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+							"    ",
+							"    responseData.forEach(function(book) {",
+							"        pm.expect(book.id).to.be.a('number').that.is.greaterThanOrEqual(0);",
+							"        pm.expect(book.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");",
+							"        pm.expect(book.author).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Author should not be empty\");",
+							"        pm.expect(book.rating).to.be.a('number').that.is.greaterThanOrEqual(0);",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/book",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получить книгу по описанию",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields - id, title, author, and rating\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"    pm.expect(responseData).to.have.property('title');\r",
+							"    pm.expect(responseData).to.have.property('author');\r",
+							"    pm.expect(responseData).to.have.property('rating');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Title and author are non-empty strings\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");\r",
+							"    pm.expect(responseData.author).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Author should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Rating is a non-negative integer\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.rating).to.be.a('number');\r",
+							"    pm.expect(responseData.rating).to.be.at.least(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/api/book/find-by?title=The%20idiot&author=Fyodor%20Dostoyevsky",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"book",
+						"find-by"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "The%20idiot"
+						},
+						{
+							"key": "author",
+							"value": "Fyodor%20Dostoyevsky"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавить книгу в библиотеку",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields - id, title, author, and rating\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"    pm.expect(responseData).to.have.property('title');\r",
+							"    pm.expect(responseData).to.have.property('author');\r",
+							"    pm.expect(responseData).to.have.property('rating');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Title is a non-empty string\", function () {\r",
+							"    pm.expect(responseData.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Rating is a non-negative integer\", function () {\r",
+							"    pm.expect(responseData.rating).to.be.a('number');\r",
+							"    pm.expect(responseData.rating).to.satisfy((rating) => rating >= 0, \"Rating must be a non-negative integer\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Account-Id",
+						"value": "{{XAccountId}}"
+					},
+					{
+						"key": "X-Request-Id",
+						"value": "{{XRequestId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Nineteen Eighty-Four\",\r\n  \"author\": \"George Orwell\",\r\n  \"rating\": 9\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/book/creat",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"book",
+						"creat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавить книгу в библиотеку (повторно)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 202\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(202);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields - id, title, author, and rating\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"    pm.expect(responseData).to.have.property('title');\r",
+							"    pm.expect(responseData).to.have.property('author');\r",
+							"    pm.expect(responseData).to.have.property('rating');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Title is a non-empty string\", function () {\r",
+							"    pm.expect(responseData.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Rating is a non-negative integer\", function () {\r",
+							"    pm.expect(responseData.rating).to.be.a('number');\r",
+							"    pm.expect(responseData.rating).to.satisfy((rating) => rating >= 0, \"Rating must be a non-negative integer\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Account-Id",
+						"value": "{{XAccountId}}"
+					},
+					{
+						"key": "X-Request-Id",
+						"value": "{{XRequestId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Nineteen Eighty-Four\",\r\n  \"author\": \"George Orwell\",\r\n  \"rating\": 9\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/book/creat",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"book",
+						"creat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Взять книгу в библиотеке",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is within an acceptable range\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id, accountId, and book are present in the response\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.id).to.exist;\r",
+							"    pm.expect(responseData.accountId).to.exist;\r",
+							"    pm.expect(responseData.book).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id and accountId are non-negative integers\", function () {\r",
+							"    pm.expect(responseData.id).to.be.a('number').and.to.be.at.least(0);\r",
+							"    pm.expect(responseData.accountId).to.be.a('number').and.to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Title and author in the book object are non-empty strings\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.book).to.exist.and.to.be.an('object');\r",
+							"    pm.expect(responseData.book.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");\r",
+							"    pm.expect(responseData.book.author).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Author should not be empty\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Account-Id",
+						"value": "{{XAccountId}}"
+					},
+					{
+						"key": "X-Request-Id",
+						"value": "{{XRequestId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/book/take/4",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"book",
+						"take",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Взять книгу в библиотеке (повторно)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 202\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(202);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is within an acceptable range\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id, accountId, and book are present in the response\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.id).to.exist;\r",
+							"    pm.expect(responseData.accountId).to.exist;\r",
+							"    pm.expect(responseData.book).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id and accountId are non-negative integers\", function () {\r",
+							"    pm.expect(responseData.id).to.be.a('number').and.to.be.at.least(0);\r",
+							"    pm.expect(responseData.accountId).to.be.a('number').and.to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Title and author in the book object are non-empty strings\", function () {\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.book).to.exist.and.to.be.an('object');\r",
+							"    pm.expect(responseData.book.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");\r",
+							"    pm.expect(responseData.book.author).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Author should not be empty\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Account-Id",
+						"value": "{{XAccountId}}"
+					},
+					{
+						"key": "X-Request-Id",
+						"value": "{{XRequestId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/api/book/take/4",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"book",
+						"take",
+						"4"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
