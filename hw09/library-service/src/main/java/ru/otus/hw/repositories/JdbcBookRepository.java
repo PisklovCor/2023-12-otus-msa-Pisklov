@@ -24,11 +24,19 @@ public class JdbcBookRepository implements BookRepository {
     private final NamedParameterJdbcOperations jdbc;
 
     @Override
+    public Optional<Book> findById(long bookId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", bookId);
+        return Optional.ofNullable(jdbc.query(
+                "select id, title, author, rating from book_table where id = :id"
+                , params, new BookResultSetExtractor())).filter(b -> b.getId() != 0);
+    }
+
+    @Override
     public List<Book> findAll() {
         return jdbc.getJdbcOperations()
                 .query("select id, title, author, rating from book_table", new BookRowMapper());
     }
-
 
     @Override
     public Book create(Book book) {

@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface BookRepository {
 
+    Optional<Book> findById(long bookId);
+
     List<Book> findAll();
 
     Book create(Book book);

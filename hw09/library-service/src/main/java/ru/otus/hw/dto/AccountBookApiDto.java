@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
+public class AccountBookApiDto {
 
-    private String login;
+    private long id;
 
-    private Integer sum;
+    private long accountId;
+
+    private BookApiDto book;
 
 }

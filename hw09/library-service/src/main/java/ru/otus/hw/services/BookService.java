@@ -1,17 +1,18 @@
 package ru.otus.hw.services;
 
-import ru.otus.hw.models.AccountBook;
-import ru.otus.hw.models.Book;
+import ru.otus.hw.dto.AccountBookApiDto;
+import ru.otus.hw.dto.BookApiDto;
+import ru.otus.hw.dto.CreatBookApiDto;
 
 import java.util.List;
 
 public interface BookService {
 
-    List<Book> findAll();
+    List<BookApiDto> findAll();
 
-    Book create(Book book);
+    BookApiDto create(CreatBookApiDto book);
 
-    Book findByTitleAndAuthor(String title, String author);
+    BookApiDto findByTitleAndAuthor(String title, String author);
 
-    AccountBook takeBook(long bookId, long accountId);
+    AccountBookApiDto takeBook(long bookId, long accountId);
 }

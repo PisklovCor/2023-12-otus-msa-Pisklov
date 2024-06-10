@@ -3,6 +3,10 @@ package ru.otus.hw.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.otus.hw.converters.BookConverter;
+import ru.otus.hw.dto.AccountBookApiDto;
+import ru.otus.hw.dto.BookApiDto;
+import ru.otus.hw.dto.CreatBookApiDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.AccountBook;
 import ru.otus.hw.models.Book;
@@ -10,6 +14,7 @@ import ru.otus.hw.repositories.AccountBookRepository;
 import ru.otus.hw.repositories.BookRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -20,40 +25,55 @@ public class BookServiceImpl implements BookService {
 
     private final AccountBookRepository accountBookRepository;
 
+    private final BookConverter converter;
+
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<BookApiDto> findAll() {
+        return bookRepository.findAll().stream().map(converter::toDto).toList();
     }
 
     @Override
-    public Book create(Book book) {
+    public BookApiDto create(CreatBookApiDto book) {
         log.info("Получена новая книга от пользователя [{}]", book.toString());
 
         var optionalBook = bookRepository.findByTitleAndAuthor(book.getTitle(), book.getAuthor());
 
         if (optionalBook.isPresent()) {
             log.info("Книга уже сущестует в библиотеке");
-            return optionalBook.orElse(null);
+            return converter.toDto(optionalBook.orElse(null));
         }
 
-        return bookRepository.create(book);
+        return converter.toDto(bookRepository.create(converter.toModel(book)));
     }
 
     @Override
-    public Book findByTitleAndAuthor(String title, String author) {
+    public BookApiDto findByTitleAndAuthor(String title, String author) {
         var optionalBook = bookRepository.findByTitleAndAuthor(title, author);
 
-        return optionalBook
+        return converter.toDto(optionalBook
                 .orElseThrow(() -> new EntityNotFoundException("Books with title %s and author %s not found"
-                        .formatted(title, author)));
+                        .formatted(title, author))));
     }
 
     @Override
-    public AccountBook takeBook(long bookId, long accountId) {
+    public AccountBookApiDto takeBook(long bookId, long accountId) {
         AccountBook accountBook = new AccountBook();
         accountBook.setAccountId(accountId);
         accountBook.setBookId(bookId);
 
-        return accountBookRepository.create(accountBook);
+        Optional<Book> book = bookRepository.findById(bookId);
+
+        if (book.isEmpty()) {
+            throw new EntityNotFoundException("Books with id %s not found".formatted(bookId));
+        }
+
+        AccountBook model = accountBookRepository.create(accountBook);
+
+        AccountBookApiDto dto = new AccountBookApiDto();
+        dto.setId(model.getId());
+        dto.setAccountId(model.getAccountId());
+        dto.setBook(converter.toDto(book.orElse(null)));
+
+        return dto;
     }
 }
