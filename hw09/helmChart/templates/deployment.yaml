@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-hw-deployment-library-service
+  labels:
+    app: {{ .Release.Name }}-hw-app-k8s-a
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: hw-library-service
+  template:
+    metadata:
+      labels:
+        env: hw-library-service
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-hw-09-library-service
+        image: {{ .Values.container.libraryService.image }}
+        ports:
+          - containerPort: {{ .Values.container.libraryService.containerPort }}
+        env:
+          - name: spring.datasource.url
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}-hw-app-config
+                key: datasourceUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-postgres
+  labels:
+    app: {{ .Release.Name }}-hw-postgres
+
+spec:
+  replicas: {{ .Values.container.postgres.replicaCount }}
+  selector:
+    matchLabels:
+      env: postgres-app
+  template:
+    metadata:
+      labels:
+        env: postgres-app
+    spec:
+      containers:
+        - name  : {{ .Release.Name }}-postgres-13
+          image : {{ .Values.container.postgres.image }}
+          ports :
+            - containerPort: {{ .Values.container.postgres.containerPort }}
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key : postgresDb
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key : postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key : postgresPassword
