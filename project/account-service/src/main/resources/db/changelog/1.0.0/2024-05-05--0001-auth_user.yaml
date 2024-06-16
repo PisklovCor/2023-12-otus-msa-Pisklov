@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-06-16--0001-users
+      author: pisklov
+      changes:
+        - createTable:
+            tableName: auth_user
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_auth_user
+              - column:
+                  name: login
+                  type: varchar(255)
+              - column:
+                  name: password
+                  type: varchar(255)
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: first_name
+                  type: varchar(255)
+              - column:
+                  name: last_name
+                  type: varchar(255)
+  - changeSet:
+      id: 2024-06-16--0002-addUniqueConstraint-example
+      author: pisklov
+      changes:
+        - addUniqueConstraint:
+            columnNames: login, password
+            constraintName: const_auth_use
+            deferrable: true
+            disabled: true
+            initiallyDeferred:  true
+            schemaName: public
+            tableName: auth_user
+            validate: true
