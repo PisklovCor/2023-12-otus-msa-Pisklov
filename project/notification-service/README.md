@@ -14,7 +14,7 @@ docker build -t pisklovcor/project-notification-docker:dockerfile .
 
 ### Запуск docker образа:
 ````shell
-docker run --name project-notification -p 8003:8003 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' --network=hw-networks -d pisklovcor/project-notification-docker:dockerfile
+docker run --name project-notification -p 8003:8003 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' -e application.destinationListener='library-notice' -e spring.artemis.broker-url='tcp://jms-broker:61616' --network=hw-networks -d pisklovcor/project-notification-docker:dockerfile
 ````
 
 ### Проверка network:

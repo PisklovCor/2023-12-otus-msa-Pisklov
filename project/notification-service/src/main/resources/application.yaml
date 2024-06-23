@@ -1,8 +1,15 @@
+application:
+  destinationListener: library-notice
 server:
   port: 8003
 spring:
   application:
     name: notification-service
+  artemis:
+    mode: native
+    broker-url: tcp://localhost:61616
+    user: user
+    password: user
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: admin
