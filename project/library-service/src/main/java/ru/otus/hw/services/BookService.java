@@ -11,13 +11,13 @@ public interface BookService {
 
     List<BookApiDto> findAll();
 
-    BookApiDto create(CreatBookApiDto book);
+    BookApiDto create(CreatBookApiDto book, long accountId, String email);
 
     BookApiDto findByTitleAndAuthor(String title, String author);
 
-    AccountBookApiDto takeBook(long bookId, long accountId);
+    AccountBookApiDto takeBook(long bookId, long accountId, String email);
 
     AccountAllBookApiDto getBookByAccount(long accountId);
 
-    void leaveRequestForABook(CreatBookApiDto book, long accountId);
+    void leaveRequestForABook(CreatBookApiDto book, long accountId, String email);
 }

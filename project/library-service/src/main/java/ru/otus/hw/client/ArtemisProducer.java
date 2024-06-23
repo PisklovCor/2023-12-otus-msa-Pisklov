@@ -17,6 +17,8 @@ public class ArtemisProducer {
     private final PropertiesConfiguration configuration;
 
     public void sendMessage(NotificationMessage message) {
+        log.info("Сообщение отправляется Artemis [{}]", message);
         jmsTemplate.convertAndSend(configuration.getDestinationSend(), message);
+        log.info("Сообщение отправлено");
     }
 }

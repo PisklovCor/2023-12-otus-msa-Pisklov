@@ -33,6 +33,8 @@ public class BookController {
 
     private static final String HEADER_X_REQUEST_ID = "X-Request-Id";
 
+    private static final String HEADER_X_EMAIL = "X-Email";
+
     private final BookService bookService;
 
     private final Map<UUID, BookApiDto> idempotencyKeyAddBook = new HashMap<>();
@@ -66,15 +68,16 @@ public class BookController {
     @PostMapping("/api/book/creat")
     public ResponseEntity<BookApiDto> createBook(HttpServletRequest request, @RequestBody CreatBookApiDto book) {
 
-        idempotencyAccountIdHelper(request);
+        var accountId = idempotencyAccountIdHelper(request);
         var requestIdUUID = idempotencyRequestIdHelper(request);
+        var email = idempotencyEmailHelper(request);
 
         if (idempotencyKeyAddBook.containsKey(requestIdUUID)) {
             log.info("Запрос будет возвращаться из кэша, requestI=[{}]", requestIdUUID);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(idempotencyKeyAddBook.get(requestIdUUID));
         }
 
-        final BookApiDto dto = bookService.create(book);
+        final BookApiDto dto = bookService.create(book, accountId, email);
         idempotencyKeyAddBook.put(requestIdUUID, dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -86,13 +89,14 @@ public class BookController {
 
         var accountId = idempotencyAccountIdHelper(request);
         var requestIdUUID = idempotencyRequestIdHelper(request);
+        var email = idempotencyEmailHelper(request);
 
         if (idempotencyKeyTakeBook.containsKey(requestIdUUID)) {
             log.info("Запрос будет возвращаться из кэша, requestI=[{}]", requestIdUUID);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(idempotencyKeyTakeBook.get(requestIdUUID));
         }
 
-        final AccountBookApiDto accountBook = bookService.takeBook(bookId, accountId);
+        final AccountBookApiDto accountBook = bookService.takeBook(bookId, accountId, email);
         idempotencyKeyTakeBook.put(requestIdUUID, accountBook);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(accountBook);
@@ -104,6 +108,7 @@ public class BookController {
 
         var accountId = idempotencyAccountIdHelper(request);
         var requestIdUUID = idempotencyRequestIdHelper(request);
+        var email = idempotencyEmailHelper(request);
 
         if (idempotencyKeyLeaveRequestForABook.containsKey(requestIdUUID)) {
             log.info("Запрос будет возвращаться из кэша, requestI=[{}]", requestIdUUID);
@@ -112,7 +117,7 @@ public class BookController {
         }
 
         idempotencyKeyLeaveRequestForABook.put(requestIdUUID, "Ваша книга будет доступна в библиотеке позже");
-        bookService.leaveRequestForABook(book, accountId);
+        bookService.leaveRequestForABook(book, accountId, email);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Запрос на вашу книгу будет обработан");
     }
@@ -133,5 +138,14 @@ public class BookController {
             throw new AuthenticationException("Error authentication");
         }
         return Long.parseLong(accountId);
+    }
+
+    private String idempotencyEmailHelper(HttpServletRequest request) {
+        var email = request.getHeader(HEADER_X_EMAIL);
+
+        if (email == null) {
+            throw new AuthenticationException("Error get email");
+        }
+        return email;
     }
 }
