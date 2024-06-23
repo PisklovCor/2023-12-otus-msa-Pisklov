@@ -5,7 +5,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import ru.otus.hw.converters.UsersConverter;
 import ru.otus.hw.dto.LoginDto;
 import ru.otus.hw.dto.ResponseDto;
@@ -24,7 +27,6 @@ import java.util.UUID;
 public class UserController {
 
     private static final String HEADER_X_ACCOUNT_ID = "X-Account-Id";
-
 
     private final UsersService usersService;
 
@@ -73,20 +75,19 @@ public class UserController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("session_id")) {
+                if (cookie.getName().equals("session_id") && !cookie.getValue().isBlank()
+                        && sessions.containsKey(UUID.fromString(cookie.getValue()))) {
 
-                    if (!cookie.getValue().isBlank() && sessions.containsKey(UUID.fromString(cookie.getValue()))) {
+                    AuthUser authUser = sessions.get(UUID.fromString(cookie.getValue()));
 
-                        AuthUser authUser = sessions.get(UUID.fromString(cookie.getValue()));
+                    response.setHeader(HEADER_X_ACCOUNT_ID, String.valueOf(authUser.getId()));
+                    response.setHeader("X-User", authUser.getLogin());
+                    response.setHeader("X-Email", authUser.getEmail());
+                    response.setHeader("X-First-Name", authUser.getFirstName());
+                    response.setHeader("X-Last-Name", authUser.getLastName());
 
-                        response.setHeader(HEADER_X_ACCOUNT_ID, String.valueOf(authUser.getId()));
-                        response.setHeader("X-User", authUser.getLogin());
-                        response.setHeader("X-Email", authUser.getEmail());
-                        response.setHeader("X-First-Name", authUser.getFirstName());
-                        response.setHeader("X-Last-Name", authUser.getLastName());
+                    return ResponseDto.builder().status("Пользователь авторизован").build();
 
-                        return ResponseDto.builder().status("Пользователь авторизован").build();
-                    }
                 }
             }
         }
@@ -101,11 +102,8 @@ public class UserController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("session_id")) {
-
-                    if (!cookie.getValue().isBlank()) {
-                        sessions.remove(UUID.fromString(cookie.getValue()));
-                    }
+                if (cookie.getName().equals("session_id") && !cookie.getValue().isBlank()) {
+                    sessions.remove(UUID.fromString(cookie.getValue()));
                 }
             }
         }

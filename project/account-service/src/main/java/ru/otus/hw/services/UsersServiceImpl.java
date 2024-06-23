@@ -8,8 +8,6 @@ import ru.otus.hw.repositories.UsersRepository;
 
 import java.util.Optional;
 
-import static org.springframework.util.CollectionUtils.isEmpty;
-
 @Service
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {

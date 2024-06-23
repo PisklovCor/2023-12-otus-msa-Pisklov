@@ -9,7 +9,10 @@ import ru.otus.hw.exceptions.AuthenticationException;
 import ru.otus.hw.exceptions.AuthUserNotFoundException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 @RestControllerAdvice
@@ -18,28 +21,32 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handler(Exception e) {
         log.error("Ошибка: {}", e.getMessage());
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body("Ошибка сервера app-auth");
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
+                .body("Ошибка сервера app-auth");
 
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handler(EntityNotFoundException e) {
         log.error("Ошибка: {}", e.getMessage());
-        return ResponseEntity.status(SERVICE_UNAVAILABLE).contentType(MediaType.APPLICATION_JSON).body("Ошибка поиска app-auth");
+        return ResponseEntity.status(SERVICE_UNAVAILABLE).contentType(MediaType.APPLICATION_JSON)
+                .body("Ошибка поиска app-auth");
 
     }
 
     @ExceptionHandler(AuthUserNotFoundException.class)
     public ResponseEntity<String> handler(AuthUserNotFoundException e) {
         log.error("Ошибка: {}", e.getMessage());
-        return ResponseEntity.status(BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body("Ошибка при поиске пользователя app-auth");
+        return ResponseEntity.status(BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
+                .body("Ошибка при поиске пользователя app-auth");
 
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> handler(AuthenticationException e) {
         log.error("Ошибка: {}", e.getMessage());
-        return ResponseEntity.status(UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON).body("Ошибка аутентификация app-auth");
+        return ResponseEntity.status(UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON)
+                .body("Ошибка аутентификация app-auth");
 
     }
 }

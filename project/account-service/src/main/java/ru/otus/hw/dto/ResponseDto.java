@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class ResponseDto {
 
-    String status;
+    private String status;
 }

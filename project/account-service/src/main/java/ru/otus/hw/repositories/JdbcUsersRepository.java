@@ -11,7 +11,10 @@ import ru.otus.hw.models.AuthUser;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 
 @Repository
@@ -26,7 +29,8 @@ public class JdbcUsersRepository implements UsersRepository {
         params.put("login", login);
         params.put("password", password);
         return Optional.ofNullable(jdbc.query(
-                "select id, login, password, email, first_name, last_name from auth_user where login = :login and password = :password"
+                "select id, login, password, email, first_name, last_name" +
+                        " from auth_user where login = :login and password = :password"
                 , params, new UsersResultSetExtractor())).filter(b -> b.getId() != 0);
     }
 
@@ -40,7 +44,8 @@ public class JdbcUsersRepository implements UsersRepository {
         params.addValue("email", authUser.getEmail());
         params.addValue("first_name", authUser.getFirstName());
         params.addValue("last_name", authUser.getLastName());
-        jdbc.update("insert into auth_user (login, password, email, first_name, last_name) values (:login, :password, :email, :first_name, :last_name)"
+        jdbc.update("insert into auth_user (login, password, email, first_name, last_name)" +
+                        " values (:login, :password, :email, :first_name, :last_name)"
                 , params, keyHolder, new String[]{"id"});
 
         authUser.setId(keyHolder.getKeyAs(Long.class));
