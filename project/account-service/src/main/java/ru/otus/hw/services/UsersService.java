@@ -10,4 +10,6 @@ public interface UsersService {
 
     AuthUser create(AuthUser authUser);
 
+    void deleteAccount(long accountId);
+
 }

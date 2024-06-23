@@ -28,4 +28,8 @@ public class UsersServiceImpl implements UsersService {
     public AuthUser create(AuthUser authUser) {
         return usersRepository.create(authUser);
     }
+
+    public void deleteAccount(long accountId) {
+        usersRepository.deleteAccount(accountId);
+    }
 }

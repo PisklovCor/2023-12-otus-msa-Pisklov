@@ -14,8 +14,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-
+import java.util.Collections;
 
 @Repository
 @RequiredArgsConstructor
@@ -50,6 +49,12 @@ public class JdbcUsersRepository implements UsersRepository {
 
         authUser.setId(keyHolder.getKeyAs(Long.class));
         return authUser;
+    }
+
+    @Override
+    public void deleteAccount(long accountId) {
+        Map<String, Object> params = Collections.singletonMap("id", accountId);
+        jdbc.update("delete from auth_user where id = :id", params);
     }
 
     @SuppressWarnings("ClassCanBeRecord")

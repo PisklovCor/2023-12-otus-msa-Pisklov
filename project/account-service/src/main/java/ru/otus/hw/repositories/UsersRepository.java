@@ -9,4 +9,6 @@ public interface UsersRepository {
     Optional<AuthUser> findByLoginPassword(String login, String password);
 
     AuthUser create(AuthUser authUser);
+
+    void deleteAccount(long accountId);
 }
