@@ -6,6 +6,7 @@ import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.AuthUser;
 import ru.otus.hw.repositories.UsersRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,11 @@ public class UsersServiceImpl implements UsersService {
             throw new EntityNotFoundException("One user with login %s not found".formatted(login));
         }
          return user;
+    }
+
+    @Override
+    public List<AuthUser> findAll() {
+        return usersRepository.findAll();
     }
 
     @Override

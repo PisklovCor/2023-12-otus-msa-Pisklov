@@ -3,6 +3,7 @@ package ru.otus.hw.repositories;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Collections;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,6 +33,13 @@ public class JdbcUsersRepository implements UsersRepository {
                 "select id, login, password, email, first_name, last_name" +
                         " from auth_user where login = :login and password = :password"
                 , params, new UsersResultSetExtractor())).filter(b -> b.getId() != 0);
+    }
+
+    @Override
+    public List<AuthUser> findAll() {
+        return jdbc.getJdbcOperations()
+                .query("select id, login, password, email, first_name, last_name from auth_user",
+                        new AuthUserRowMapper());
     }
 
     @Override
@@ -76,6 +85,20 @@ public class JdbcUsersRepository implements UsersRepository {
             }
 
             return authUser;
+        }
+    }
+
+    private static class AuthUserRowMapper implements RowMapper<AuthUser> {
+
+        @Override
+        public AuthUser mapRow(ResultSet resultSet, int i) throws SQLException {
+            final long id = resultSet.getLong("id");
+            final String login = resultSet.getString("login");
+            final String password = resultSet.getString("password");
+            final String email = resultSet.getString("email");
+            final String firstName = resultSet.getString("first_name");
+            final String lastName = resultSet.getString("last_name");
+            return new AuthUser(id, login, password, email, firstName, lastName);
         }
     }
 }

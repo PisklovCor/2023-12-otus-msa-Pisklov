@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.otus.hw.exceptions.AuthenticationException;
 import ru.otus.hw.exceptions.AuthUserNotFoundException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
+import ru.otus.hw.exceptions.AuthenticationAdminException;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Slf4j
 @RestControllerAdvice
@@ -47,6 +49,15 @@ public class GlobalExceptionHandler {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON)
                 .body("Ошибка аутентификация account-service");
+
+    }
+
+
+    @ExceptionHandler(AuthenticationAdminException.class)
+    public ResponseEntity<String> handler(AuthenticationAdminException e) {
+        log.error("Ошибка: {}", e.getMessage());
+        return ResponseEntity.status(FORBIDDEN).contentType(MediaType.APPLICATION_JSON)
+                .body("У вас недостаточно прав для выполнения этой операции");
 
     }
 }
