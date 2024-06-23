@@ -18,6 +18,7 @@ import ru.otus.hw.converters.OrderConverter;
 import ru.otus.hw.dto.CreatOrderDto;
 import ru.otus.hw.dto.OrderDto;
 import ru.otus.hw.exceptions.IdempotentRequestsException;
+import ru.otus.hw.exceptions.AuthenticationAdminException;
 import ru.otus.hw.services.OrderService;
 
 import java.util.List;
@@ -73,7 +74,7 @@ public class OrderController {
         }
 
         if (!userLogin.equals("admin")) {
-            throw new IdempotentRequestsException("Error user not ADMIN");
+            throw new AuthenticationAdminException("Error user not ADMIN");
         }
 
         service.deleteOrder(orderId);

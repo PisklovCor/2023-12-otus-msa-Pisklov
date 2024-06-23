@@ -20,6 +20,7 @@ import ru.otus.hw.dto.CreatBookApiDto;
 import ru.otus.hw.dto.in.CreatBookApiOrderDto;
 import ru.otus.hw.exceptions.AuthenticationException;
 import ru.otus.hw.exceptions.IdempotentRequestsException;
+import ru.otus.hw.exceptions.AuthenticationAdminException;
 import ru.otus.hw.services.BookService;
 
 import java.util.HashMap;
@@ -148,7 +149,7 @@ public class BookController {
         }
 
         if (!userLogin.equals("admin")) {
-            throw new IdempotentRequestsException("Error user not ADMIN");
+            throw new AuthenticationAdminException("Error user not ADMIN");
         }
 
         bookService.deleteBook(bookId);

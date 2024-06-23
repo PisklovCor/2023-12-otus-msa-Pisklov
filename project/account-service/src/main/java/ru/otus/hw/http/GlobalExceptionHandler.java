@@ -52,7 +52,6 @@ public class GlobalExceptionHandler {
 
     }
 
-
     @ExceptionHandler(AuthenticationAdminException.class)
     public ResponseEntity<String> handler(AuthenticationAdminException e) {
         log.error("Ошибка: {}", e.getMessage());

@@ -5,14 +5,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.otus.hw.exceptions.AuthenticationAdminException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.exceptions.ExternalServiceInteractionException;
 import ru.otus.hw.exceptions.IdempotentRequestsException;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
-import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
-import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 
 @Slf4j
@@ -48,6 +48,14 @@ public class GlobalExceptionHandler {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(SERVICE_UNAVAILABLE)
                 .contentType(MediaType.APPLICATION_JSON).body("Ошибка идемпотентности order-service");
+
+    }
+
+    @ExceptionHandler(AuthenticationAdminException.class)
+    public ResponseEntity<String> handler(AuthenticationAdminException e) {
+        log.error("Ошибка: {}", e.getMessage());
+        return ResponseEntity.status(FORBIDDEN).contentType(MediaType.APPLICATION_JSON)
+                .body("У вас недостаточно прав для выполнения этой операции");
 
     }
 }

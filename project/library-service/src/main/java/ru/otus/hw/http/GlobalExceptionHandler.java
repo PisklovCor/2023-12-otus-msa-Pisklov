@@ -9,10 +9,12 @@ import ru.otus.hw.exceptions.AuthenticationException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.exceptions.IdempotentRequestsException;
 import ru.otus.hw.exceptions.ExternalServiceInteractionException;
+import ru.otus.hw.exceptions.AuthenticationAdminException;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Slf4j
 @RestControllerAdvice
@@ -56,6 +58,14 @@ public class GlobalExceptionHandler {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
                 .body("Ошибка аутентификация library-service");
+
+    }
+
+    @ExceptionHandler(AuthenticationAdminException.class)
+    public ResponseEntity<String> handler(AuthenticationAdminException e) {
+        log.error("Ошибка: {}", e.getMessage());
+        return ResponseEntity.status(FORBIDDEN).contentType(MediaType.APPLICATION_JSON)
+                .body("У вас недостаточно прав для выполнения этой операции");
 
     }
 }
