@@ -26,7 +26,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAccountByAccountId(long accountId) {
+    public List<Order> findOrderByAccountId(long accountId) {
         return orderRepository.findOrderByAccountId(accountId);
     }
 

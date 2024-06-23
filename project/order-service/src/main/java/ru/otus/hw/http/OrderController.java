@@ -48,6 +48,6 @@ public class OrderController {
     @GetMapping("/api/order/{accountId}")
     public ResponseEntity<List<OrderDto>> getOrder(@PathVariable long accountId) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                service.findAccountByAccountId(accountId).stream().map(converter::mapModelToDto).toList());
+                service.findOrderByAccountId(accountId).stream().map(converter::mapModelToDto).toList());
     }
 }

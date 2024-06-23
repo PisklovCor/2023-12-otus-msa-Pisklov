@@ -12,7 +12,7 @@ public interface OrderService {
 
     List<Order> findAll();
 
-    List<Order> findAccountByAccountId(long accountId);
+    List<Order> findOrderByAccountId(long accountId);
 
     Optional<Order> findOrderByTitleAndAuthor(CreatOrderDto dto);
 }
