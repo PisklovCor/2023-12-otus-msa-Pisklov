@@ -1,16 +1,8 @@
-application:
-  order-url: http://localhost:8002
-  destinationSend: library-notice
 server:
-  port: 8000
+  port: 8002
 spring:
   application:
-    name: library-service
-  artemis:
-    mode: native
-    broker-url: tcp://localhost:61616
-    user: user
-    password: user
+    name: order-service
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: admin

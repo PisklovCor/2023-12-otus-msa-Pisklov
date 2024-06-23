@@ -3,11 +3,13 @@ package ru.otus.hw.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.otus.hw.client.OrderClient;
 import ru.otus.hw.converters.BookConverter;
 import ru.otus.hw.dto.AccountBookApiDto;
 import ru.otus.hw.dto.AccountAllBookApiDto;
 import ru.otus.hw.dto.BookApiDto;
 import ru.otus.hw.dto.CreatBookApiDto;
+import ru.otus.hw.dto.out.OrderDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.AccountBook;
 import ru.otus.hw.models.Book;
@@ -28,6 +30,8 @@ public class BookServiceImpl implements BookService {
     private final AccountBookRepository accountBookRepository;
 
     private final BookConverter converter;
+
+    private final OrderClient orderClient;
 
     @Override
     public List<BookApiDto> findAll() {
@@ -105,7 +109,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void leaveRequestForABook(CreatBookApiDto book) {
+    public void leaveRequestForABook(CreatBookApiDto book, long accountId) {
         log.info("Книга будет отправлена на заказ для пополнения!");
+
+        OrderDto orderDto = new OrderDto();
+        orderDto.setAccountId(accountId);
+        orderDto.setTitle(book.getTitle());
+        orderDto.setAuthor(book.getAuthor());
+
+        orderClient.sendOrderServiceBook(orderDto);
+        log.info("Запрос успешно отправлен");
     }
 }

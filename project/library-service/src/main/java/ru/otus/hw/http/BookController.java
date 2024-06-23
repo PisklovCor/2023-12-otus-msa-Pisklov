@@ -102,7 +102,7 @@ public class BookController {
     @PostMapping("api/book/leave-request")
     public ResponseEntity<String> leaveRequestForABook(HttpServletRequest request, @RequestBody CreatBookApiDto book) {
 
-        idempotencyAccountIdHelper(request);
+        var accountId = idempotencyAccountIdHelper(request);
         var requestIdUUID = idempotencyRequestIdHelper(request);
 
         if (idempotencyKeyLeaveRequestForABook.containsKey(requestIdUUID)) {
@@ -112,7 +112,7 @@ public class BookController {
         }
 
         idempotencyKeyLeaveRequestForABook.put(requestIdUUID, "Ваша книга будет доступна в библиотеке позже");
-        bookService.leaveRequestForABook(book);
+        bookService.leaveRequestForABook(book, accountId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Запрос на вашу книгу будет обработан");
     }

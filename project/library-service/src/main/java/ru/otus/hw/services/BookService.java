@@ -19,5 +19,5 @@ public interface BookService {
 
     AccountAllBookApiDto getBookByAccount(long accountId);
 
-    void leaveRequestForABook(CreatBookApiDto book);
+    void leaveRequestForABook(CreatBookApiDto book, long accountId);
 }
