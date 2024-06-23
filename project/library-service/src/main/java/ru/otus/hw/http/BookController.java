@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.hw.dto.AccountBookApiDto;
+import ru.otus.hw.dto.AccountAllBookApiDto;
 import ru.otus.hw.dto.BookApiDto;
 import ru.otus.hw.dto.CreatBookApiDto;
 import ru.otus.hw.exceptions.AuthenticationException;
@@ -39,30 +39,38 @@ public class BookController {
 
     private final Map<UUID, AccountBookApiDto> idempotencyKeyTakeBook = new HashMap<>();
 
+    private final Map<UUID, String> idempotencyKeyLeaveRequestForABook = new HashMap<>();
+
     @Operation(summary = "Получить список всех книг")
     @GetMapping("api/book")
-    public ResponseEntity<List<BookApiDto>> getAllBook() {
+    public ResponseEntity<List<BookApiDto>> getAllBook(HttpServletRequest request) {
+
+        idempotencyAccountIdHelper(request);
+        idempotencyRequestIdHelper(request);
+
         return ResponseEntity.status(HttpStatus.OK).body(bookService.findAll());
+    }
+
+    @Operation(summary = "Получить все книги пользоваетля")
+    @GetMapping("api/book/find-by-account")
+    public ResponseEntity<AccountAllBookApiDto> getBook(HttpServletRequest request) {
+
+        idempotencyRequestIdHelper(request);
+        var accountId = idempotencyAccountIdHelper(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                bookService.getBookByAccount(accountId));
     }
 
     @Operation(summary = "Добавить книгу в библиотеку")
     @PostMapping("/api/book/creat")
     public ResponseEntity<BookApiDto> createBook(HttpServletRequest request, @RequestBody CreatBookApiDto book) {
 
-        var accountId = request.getHeader(HEADER_X_ACCOUNT_ID);
-        var requestId = request.getHeader(HEADER_X_REQUEST_ID);
+        idempotencyAccountIdHelper(request);
+        var requestIdUUID = idempotencyRequestIdHelper(request);
 
-        if (accountId == null) {
-            throw new AuthenticationException("Error authentication");
-        }
-
-        if (requestId == null) {
-            throw new IdempotentRequestsException("Error idempotent requests");
-        }
-
-        var requestIdUUID = UUID.fromString(requestId);
         if (idempotencyKeyAddBook.containsKey(requestIdUUID)) {
-            log.info("Запрос будет возвращаться из кэша, requestI=[{}]", requestId);
+            log.info("Запрос будет возвращаться из кэша, requestI=[{}]", requestIdUUID);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(idempotencyKeyAddBook.get(requestIdUUID));
         }
 
@@ -76,33 +84,54 @@ public class BookController {
     @PostMapping("/api/book/take/{bookId}")
     public ResponseEntity<AccountBookApiDto> takeBook(HttpServletRequest request, @PathVariable long bookId) {
 
-        var accountId = request.getHeader(HEADER_X_ACCOUNT_ID);
-        var requestId = request.getHeader(HEADER_X_REQUEST_ID);
+        var accountId = idempotencyAccountIdHelper(request);
+        var requestIdUUID = idempotencyRequestIdHelper(request);
 
-        if (accountId == null) {
-            throw new AuthenticationException("Error authentication");
-        }
-
-        if (requestId == null) {
-            throw new IdempotentRequestsException("Error idempotent requests");
-        }
-
-        var requestIdUUID = UUID.fromString(requestId);
         if (idempotencyKeyTakeBook.containsKey(requestIdUUID)) {
-            log.info("Запрос будет возвращаться из кэша, requestI=[{}]", requestId);
+            log.info("Запрос будет возвращаться из кэша, requestI=[{}]", requestIdUUID);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(idempotencyKeyTakeBook.get(requestIdUUID));
         }
 
-        final AccountBookApiDto accountBook = bookService.takeBook(bookId, Long.parseLong(accountId));
+        final AccountBookApiDto accountBook = bookService.takeBook(bookId, accountId);
         idempotencyKeyTakeBook.put(requestIdUUID, accountBook);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(accountBook);
     }
 
-    @Operation(summary = "Получить книгу по описанию")
-    @GetMapping("api/book/find-by")
-    public ResponseEntity<BookApiDto> getBook(@RequestParam String title, @RequestParam String author) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                bookService.findByTitleAndAuthor(title, author));
+    @Operation(summary = "Оставить заявку на пополнение библиотеки")
+    @PostMapping("api/book/leave-request")
+    public ResponseEntity<String> leaveRequestForABook(HttpServletRequest request, @RequestBody CreatBookApiDto book) {
+
+        idempotencyAccountIdHelper(request);
+        var requestIdUUID = idempotencyRequestIdHelper(request);
+
+        if (idempotencyKeyLeaveRequestForABook.containsKey(requestIdUUID)) {
+            log.info("Запрос будет возвращаться из кэша, requestI=[{}]", requestIdUUID);
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                    .body(idempotencyKeyLeaveRequestForABook.get(requestIdUUID));
+        }
+
+        idempotencyKeyLeaveRequestForABook.put(requestIdUUID, "Ваша книга будет доступна в библиотеке позже");
+        bookService.leaveRequestForABook(book);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Запрос на вашу книгу будет обработан");
+    }
+
+    private UUID idempotencyRequestIdHelper(HttpServletRequest request) {
+        var requestId = request.getHeader(HEADER_X_REQUEST_ID);
+
+        if (requestId == null) {
+            throw new IdempotentRequestsException("Error idempotent requests");
+        }
+         return UUID.fromString(requestId);
+    }
+
+    private long idempotencyAccountIdHelper(HttpServletRequest request) {
+        var accountId = request.getHeader(HEADER_X_ACCOUNT_ID);
+
+        if (accountId == null) {
+            throw new AuthenticationException("Error authentication");
+        }
+        return Long.parseLong(accountId);
     }
 }

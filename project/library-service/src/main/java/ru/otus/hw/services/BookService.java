@@ -1,6 +1,7 @@
 package ru.otus.hw.services;
 
 import ru.otus.hw.dto.AccountBookApiDto;
+import ru.otus.hw.dto.AccountAllBookApiDto;
 import ru.otus.hw.dto.BookApiDto;
 import ru.otus.hw.dto.CreatBookApiDto;
 
@@ -15,4 +16,8 @@ public interface BookService {
     BookApiDto findByTitleAndAuthor(String title, String author);
 
     AccountBookApiDto takeBook(long bookId, long accountId);
+
+    AccountAllBookApiDto getBookByAccount(long accountId);
+
+    void leaveRequestForABook(CreatBookApiDto book);
 }

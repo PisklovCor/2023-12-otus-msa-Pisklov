@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.converters.BookConverter;
 import ru.otus.hw.dto.AccountBookApiDto;
+import ru.otus.hw.dto.AccountAllBookApiDto;
 import ru.otus.hw.dto.BookApiDto;
 import ru.otus.hw.dto.CreatBookApiDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
@@ -13,6 +14,7 @@ import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.AccountBookRepository;
 import ru.otus.hw.repositories.BookRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,5 +77,35 @@ public class BookServiceImpl implements BookService {
         dto.setBook(converter.toDto(book.orElse(null)));
 
         return dto;
+    }
+
+    @Override
+    public AccountAllBookApiDto getBookByAccount(long accountId) {
+
+        var optionalAccountAll = accountBookRepository.findAll();
+
+        var optionalAccountById = optionalAccountAll.stream().filter(a -> a.getAccountId() == accountId).toList();
+
+        List<Book> bookList = new ArrayList<>();
+
+        for (AccountBook accountBook : optionalAccountById) {
+            Optional<Book> book = bookRepository.findById(accountBook.getBookId());
+
+            if (book.isEmpty()) {
+                throw new EntityNotFoundException("Books with id %s not found".formatted(accountBook.getBookId()));
+            }
+
+            bookList.add(book.get());
+        }
+
+        AccountAllBookApiDto dto = new AccountAllBookApiDto();
+        dto.setAccountId(accountId);
+        dto.setBook(bookList.stream().map(converter::toDto).toList());
+        return dto;
+    }
+
+    @Override
+    public void leaveRequestForABook(CreatBookApiDto book) {
+        log.info("Книга будет отправлена на заказ для пополнения!");
     }
 }

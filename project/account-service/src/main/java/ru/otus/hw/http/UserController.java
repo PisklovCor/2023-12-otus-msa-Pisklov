@@ -1,5 +1,6 @@
 package ru.otus.hw.http;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,16 +32,19 @@ public class UserController {
 
     private Map<UUID, AuthUser> sessions = new HashMap<>();
 
+    @Operation(summary = "Получить все активные сессии пользователей")
     @GetMapping("api/account/sessions")
     public Map<UUID, AuthUser> getSessions() {
         return sessions;
     }
 
+    @Operation(summary = "Регистрация пользователя")
     @PostMapping("api/account/register")
     public AuthUser register(@RequestBody AuthUserDto authUserDto) {
         return usersService.create(usersConverter.mapDtoToModel(authUserDto));
     }
 
+    @Operation(summary = "Вход пользователя (создание сессиии)")
     @PostMapping("api/account/login")
     public ResponseDto login(HttpServletResponse response, @RequestBody LoginDto loginDto) throws Exception {
 
@@ -62,23 +66,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("api/account/signin")
-    public ResponseDto signinGet() {
-        return ResponseDto.builder().status("Please go to login and provide Login/Password").build();
-    }
-
-    @PostMapping("api/account/signin")
-    public ResponseDto signinPost() {
-        return ResponseDto.builder().status("Please go to login and provide Login/Password").build();
-    }
-
-    @PostMapping("api/account/logout")
-    public ResponseDto logoutGet(HttpServletResponse response) {
-
-        response.addCookie(new Cookie("session_id", null));
-        return ResponseDto.builder().status("Пользователь разлогинился").build();
-    }
-
+    @Operation(summary = "Авторизация пользоваетля (запись хедеров)")
     @PostMapping("api/account/auth")
     public ResponseDto auth(HttpServletRequest request, HttpServletResponse response) {
 
@@ -104,5 +92,37 @@ public class UserController {
         }
 
         throw new AuthenticationException("Error authentication");
+    }
+
+    @Operation(summary = "Выход пользователя (удаление сессии)")
+    @PostMapping("api/account/logout")
+    public ResponseDto logoutGet(HttpServletRequest request, HttpServletResponse response) {
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("session_id")) {
+
+                    if (!cookie.getValue().isBlank()) {
+                        sessions.remove(UUID.fromString(cookie.getValue()));
+                    }
+                }
+            }
+        }
+
+        response.addCookie(new Cookie("session_id", null));
+        return ResponseDto.builder().status("Пользователь разлогинился").build();
+    }
+
+    @Operation(summary = "Редирект для логина")
+    @GetMapping("api/account/signin")
+    public ResponseDto signinGet() {
+        return ResponseDto.builder().status("Please go to login and provide Login/Password").build();
+    }
+
+    @Operation(summary = "Редирект для логина")
+    @PostMapping("api/account/signin")
+    public ResponseDto signinPost() {
+        return ResponseDto.builder().status("Please go to login and provide Login/Password").build();
     }
 }

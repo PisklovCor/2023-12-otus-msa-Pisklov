@@ -32,3 +32,8 @@
 
 ## Контракты взаимодействия (Sequence диаграмма):
 ![lib-mermaid](README.assets/lib-mermaid.png)
+
+## Паттерн для реализации идемпотентности (Library service):
+
+Для реализации выбран паттер синтетического ключа идемпотентности, формируемового на клиенте X-Request-Id (Синтетический ключ)
+- [источник](https://docs.stripe.com/api/idempotent_requests)
