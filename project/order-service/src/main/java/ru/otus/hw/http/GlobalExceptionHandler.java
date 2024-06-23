@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handler(ExternalServiceInteractionException e) {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(SERVICE_UNAVAILABLE)
-                .contentType(MediaType.APPLICATION_JSON).body("Ошибка поиска order-service");
+                .contentType(MediaType.APPLICATION_JSON).body("Ошибка обращения к внешнему сервису");
 
     }
 
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handler(IdempotentRequestsException e) {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(SERVICE_UNAVAILABLE)
-                .contentType(MediaType.APPLICATION_JSON).body("Ошибка поиска order-service");
+                .contentType(MediaType.APPLICATION_JSON).body("Ошибка идемпотентности order-service");
 
     }
 }

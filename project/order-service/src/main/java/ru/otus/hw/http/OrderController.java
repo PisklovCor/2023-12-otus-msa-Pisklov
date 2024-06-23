@@ -63,7 +63,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Удалить заявку по ID")
-    @DeleteMapping("/api/order/{orderId}")
+    @DeleteMapping("/api/order/admin/{orderId}")
     public ResponseEntity<Void> deleteOrder(HttpServletRequest request, @PathVariable long orderId) {
 
         var userLogin = request.getHeader("X-User");

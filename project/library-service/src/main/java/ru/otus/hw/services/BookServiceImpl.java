@@ -10,6 +10,7 @@ import ru.otus.hw.dto.AccountBookApiDto;
 import ru.otus.hw.dto.AccountAllBookApiDto;
 import ru.otus.hw.dto.BookApiDto;
 import ru.otus.hw.dto.CreatBookApiDto;
+import ru.otus.hw.dto.in.CreatBookApiOrderDto;
 import ru.otus.hw.dto.out.NotificationMessage;
 import ru.otus.hw.dto.out.OrderDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
@@ -56,6 +57,27 @@ public class BookServiceImpl implements BookService {
         notificationMessage.setAccountId(accountId);
         notificationMessage.setEmail(email);
         notificationMessage.setMessage("Вы добавили новую книгу. Спасибо.");
+        notificationMessage.setTitle(bookApiDto.getTitle());
+        notificationMessage.setAuthor(bookApiDto.getAuthor());
+        log.info("Отправка из сервиса в очередь");
+        sendJmsMessage(notificationMessage);
+        return bookApiDto;
+    }
+
+    @Override
+    public BookApiDto createInternal(CreatBookApiOrderDto dto) {
+        log.info("Получена новая книга от пользователя [{}]", dto);
+        var optionalBook = bookRepository.findByTitleAndAuthor(dto.getTitle(), dto.getAuthor());
+        if (optionalBook.isPresent()) {
+            log.info("Книга уже сущестует в библиотеке");
+            return converter.toDto(optionalBook.orElse(null));
+        }
+
+        BookApiDto bookApiDto = converter.toDto(bookRepository.create(converter.toModelInternalDto(dto)));
+        NotificationMessage notificationMessage = new NotificationMessage();
+        notificationMessage.setAccountId(dto.getAccountId());
+        notificationMessage.setEmail(dto.getEmail());
+        notificationMessage.setMessage("По вашему запросу книга добавлена. Списибо за ожидание.");
         notificationMessage.setTitle(bookApiDto.getTitle());
         notificationMessage.setAuthor(bookApiDto.getAuthor());
         log.info("Отправка из сервиса в очередь");
@@ -129,6 +151,7 @@ public class BookServiceImpl implements BookService {
 
         OrderDto orderDto = new OrderDto();
         orderDto.setAccountId(accountId);
+        orderDto.setEmail(email);
         orderDto.setTitle(book.getTitle());
         orderDto.setAuthor(book.getAuthor());
 
@@ -144,6 +167,11 @@ public class BookServiceImpl implements BookService {
 
         log.info("Отправка из сервиса в очередь");
         sendJmsMessage(notificationMessage);
+    }
+
+    @Override
+    public void deleteBook(long bookId) {
+        bookRepository.deleteBook(bookId);
     }
 
     private void sendJmsMessage(NotificationMessage message) {

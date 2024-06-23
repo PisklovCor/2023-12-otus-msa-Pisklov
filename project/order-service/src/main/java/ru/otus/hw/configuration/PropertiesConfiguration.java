@@ -12,16 +12,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class PropertiesConfiguration {
 
     @NotBlank
-    private String orderUrl;
-
-    @NotBlank
-    private String destinationSend;
+    private String libraryUrl;
 
     @PostConstruct
     private void init() {
         log.debug("----параметры----");
-        log.debug("orderUrl=[{}]", orderUrl);
-        log.debug("destinationSend=[{}]", destinationSend);
+        log.debug("libraryUrl=[{}]", libraryUrl);
         log.debug("---- ---- ----");
     }
 }

@@ -15,4 +15,5 @@ public interface BookRepository {
 
     Optional<Book> findByTitleAndAuthor(String title, String author);
 
+    void deleteBook(long bookId);
 }

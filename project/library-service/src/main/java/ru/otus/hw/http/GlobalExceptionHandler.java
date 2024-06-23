@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.otus.hw.exceptions.AuthenticationException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.exceptions.IdempotentRequestsException;
+import ru.otus.hw.exceptions.ExternalServiceInteractionException;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body("Ошибка Идемпотентности library-service");
+                .body("Ошибка идемпотентности library-service");
 
     }
 
@@ -46,6 +47,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handler(AuthenticationException e) {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON)
+                .body("Ошибка аутентификация library-service");
+
+    }
+
+    @ExceptionHandler(ExternalServiceInteractionException.class)
+    public ResponseEntity<String> handler(ExternalServiceInteractionException e) {
+        log.error("Ошибка: {}", e.getMessage());
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
                 .body("Ошибка аутентификация library-service");
 
     }

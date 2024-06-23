@@ -6,15 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.hw.dto.AccountBookApiDto;
 import ru.otus.hw.dto.AccountAllBookApiDto;
 import ru.otus.hw.dto.BookApiDto;
 import ru.otus.hw.dto.CreatBookApiDto;
+import ru.otus.hw.dto.in.CreatBookApiOrderDto;
 import ru.otus.hw.exceptions.AuthenticationException;
 import ru.otus.hw.exceptions.IdempotentRequestsException;
 import ru.otus.hw.services.BookService;
@@ -83,6 +80,15 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @Operation(summary = "Добавить книгу в библиотеку")
+    @PostMapping("/api/internal/book/creat")
+    public ResponseEntity<BookApiDto> createBookInternal(@RequestBody CreatBookApiOrderDto creatBookApiOrderDto) {
+
+        final BookApiDto dto = bookService.createInternal(creatBookApiOrderDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    }
+
     @Operation(summary = "Взять книгу в библиотеке")
     @PostMapping("/api/book/take/{bookId}")
     public ResponseEntity<AccountBookApiDto> takeBook(HttpServletRequest request, @PathVariable long bookId) {
@@ -120,6 +126,27 @@ public class BookController {
         bookService.leaveRequestForABook(book, accountId, email);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Запрос на вашу книгу будет обработан");
+    }
+
+    @Operation(summary = "Удалить книгу по ID")
+    @DeleteMapping("/api/book/admin/{bookId}")
+    public ResponseEntity<Void> deleteOrder(HttpServletRequest request, @PathVariable long bookId) {
+
+        idempotencyAccountIdHelper(request);
+        idempotencyRequestIdHelper(request);
+        idempotencyEmailHelper(request);
+        var userLogin = request.getHeader("X-User");
+
+        if (userLogin == null) {
+            throw new IdempotentRequestsException("Empty header");
+        }
+
+        if (!userLogin.equals("admin")) {
+            throw new IdempotentRequestsException("Error user not ADMIN");
+        }
+
+        bookService.deleteBook(bookId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private UUID idempotencyRequestIdHelper(HttpServletRequest request) {

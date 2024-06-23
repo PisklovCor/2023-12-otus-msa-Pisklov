@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Collections;
 
 @Repository
 @RequiredArgsConstructor
@@ -68,6 +69,11 @@ public class JdbcBookRepository implements BookRepository {
                 , params, new BookResultSetExtractor())).filter(b -> b.getId() != 0);
     }
 
+    @Override
+    public void deleteBook(long bookId) {
+        Map<String, Object> params = Collections.singletonMap("id", bookId);
+        jdbc.update("delete from book_table where id = :id", params);
+    }
 
     @SuppressWarnings("ClassCanBeRecord")
     @RequiredArgsConstructor

@@ -17,7 +17,7 @@ public class PropertiesConfiguration {
     @PostConstruct
     private void init() {
         log.debug("----параметры----");
-        log.debug("destinationSend=[{}]", destinationListener);
+        log.debug("destinationListener=[{}]", destinationListener);
         log.debug("---- ---- ----");
     }
 }

@@ -14,7 +14,7 @@ docker build -t pisklovcor/project-order-docker:dockerfile .
 
 ### Запуск docker образа:
 ````shell
-docker run --name project-order -p 8002:8002 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' --network=project-networks -d pisklovcor/project-order-docker:dockerfile
+docker run --name project-order -p 8002:8002 -e spring.datasource.url='jdbc:postgresql://postgres:5432/postgres' -e application.library-url='http://host.docker.internal:8000' --network=project-networks -d pisklovcor/project-order-docker:dockerfile
 ````
 
 ### Проверка network:
