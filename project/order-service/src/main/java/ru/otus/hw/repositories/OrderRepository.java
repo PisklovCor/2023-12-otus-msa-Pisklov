@@ -9,9 +9,15 @@ public interface OrderRepository {
 
     Order createOrder(Order order);
 
+    Order updateOrder(Order order, String status);
+
+    Optional<Order> findById(long id);
+
     List<Order> findAll();
 
     List<Order> findOrderByAccountId(long accountId);
 
     Optional<Order> findOrderByTitleAndAuthor(String title, String author);
+
+    void deleteOrder(long orderId);
 }

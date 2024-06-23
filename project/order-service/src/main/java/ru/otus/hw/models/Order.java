@@ -15,6 +15,8 @@ public class Order {
 
     private String title;
 
+    private String email;
+
     private String author;
 
     private String status;

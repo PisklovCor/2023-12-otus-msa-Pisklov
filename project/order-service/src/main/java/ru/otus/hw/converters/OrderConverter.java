@@ -10,6 +10,7 @@ public class OrderConverter {
     public Order mapDtoToModel(CreatOrderDto dto) {
         Order order = new Order();
         order.setAccountId(dto.getAccountId());
+        order.setEmail(dto.getEmail());
         order.setTitle(dto.getTitle());
         order.setAuthor(dto.getAuthor());
         return order;
@@ -18,6 +19,7 @@ public class OrderConverter {
     public OrderDto mapModelToDto(Order model) {
         OrderDto dto = new OrderDto();
         dto.setAccountId(model.getAccountId());
+        dto.setEmail(model.getEmail());
         dto.setTitle(model.getTitle());
         dto.setAuthor(model.getAuthor());
         dto.setStatus(model.getStatus());

@@ -10,9 +10,13 @@ public interface OrderService {
 
     Order createOrder(Order order);
 
+    Order updateOrder(long orderId, String status);
+
     List<Order> findAll();
 
     List<Order> findOrderByAccountId(long accountId);
 
     Optional<Order> findOrderByTitleAndAuthor(CreatOrderDto dto);
+
+    void deleteOrder(long orderId);
 }

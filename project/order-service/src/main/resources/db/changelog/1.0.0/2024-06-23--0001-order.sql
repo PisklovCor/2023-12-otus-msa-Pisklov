@@ -5,6 +5,7 @@ create table table_order
 (
 id        bigserial,
 account_id   int,
+email       varchar(255) NOT NULL,
 title       varchar(255) NOT NULL,
 author      varchar(255) NOT NULL,
 status      varchar(255) NOT NULL,

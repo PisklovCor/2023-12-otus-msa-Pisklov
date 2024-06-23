@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handler(Exception e) {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
-                .body("Ошибка сервера app-auth");
+                .body("Ошибка сервера account-service");
 
     }
 
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handler(EntityNotFoundException e) {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(SERVICE_UNAVAILABLE).contentType(MediaType.APPLICATION_JSON)
-                .body("Ошибка поиска app-auth");
+                .body("Ошибка поиска account-service");
 
     }
 
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handler(AuthUserNotFoundException e) {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
-                .body("Ошибка при поиске пользователя app-auth");
+                .body("Ошибка при поиске пользователя account-service");
 
     }
 
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handler(AuthenticationException e) {
         log.error("Ошибка: {}", e.getMessage());
         return ResponseEntity.status(UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON)
-                .body("Ошибка аутентификация app-auth");
+                .body("Ошибка аутентификация account-service");
 
     }
 }

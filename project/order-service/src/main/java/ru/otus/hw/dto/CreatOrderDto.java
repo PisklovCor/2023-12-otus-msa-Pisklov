@@ -11,6 +11,8 @@ public class CreatOrderDto {
 
     private long accountId;
 
+    private String email;
+
     private String title;
 
     private String author;

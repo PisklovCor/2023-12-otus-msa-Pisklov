@@ -1,4 +1,4 @@
-package ru.otus.hw.dto;
+package ru.otus.hw.dto.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
+public class CreatBookApiOrderDto {
 
     private long accountId;
 
@@ -17,5 +17,5 @@ public class OrderDto {
 
     private String author;
 
-    private String status;
+    private Integer rating;
 }
