@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-service-account
+
+spec:
+  selector:
+    env: project-account
+  ports:
+    - protocol  : TCP
+      port      : 80
+      targetPort: 8001
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-service-library
+
+spec:
+  selector:
+    env: project-library
+  ports:
+    - protocol  : TCP
+      port      : 80
+      targetPort: 8000
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-service-notification
+
+spec:
+  selector:
+    env: project-notification
+  ports:
+    - protocol  : TCP
+      port      : 80
+      targetPort: 8003
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-service-order
+
+spec:
+  selector:
+    env: project-order
+  ports:
+    - protocol  : TCP
+      port      : 80
+      targetPort: 8002
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-svc
+
+spec:
+  selector:
+    env: postgres-project
+  ports:
+    - port      : 5432
+      targetPort: 5432
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jms-broke-svc
+
+spec:
+  selector:
+    env: jms-broker-project
+  ports:
+    - protocol  : TCP
+      port      : 61616
+      targetPort: 61616

@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hw-ingress-service
+  annotations:
+    kubernetes.io/ingress.class                      : nginx
+    nginx.ingress.kubernetes.io/use-regex            : "true"
+    nginx.ingress.kubernetes.io/auth-url             : "http://arch.homework/api/account/auth"
+    nginx.ingress.kubernetes.io/auth-method          : 'POST'
+    nginx.ingress.kubernetes.io/auth-signin          : "http://$host/api/account/signing"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-Account-Id,X-User,X-Email,X-First-Name,X-Last-Name"
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+          - path: /api/book.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: project-service-library
+                port:
+                  number: 80
+          - path: /api/notification/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: project-service-notification
+                port:
+                  number: 80
+          - path: /api/order.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: project-service-order
+                port:
+                  number: 80

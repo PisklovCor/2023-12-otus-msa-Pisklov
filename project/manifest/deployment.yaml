@@ -1,0 +1,238 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-deployment-account
+  labels:
+    app: project-app-k8s-a
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: project-account
+  template:
+    metadata:
+      labels:
+        env: project-account
+    spec:
+      containers:
+      - name : project-account-service
+        image: pisklovcor/project-account-docker:dockerfile
+        ports:
+          - containerPort: 8001
+        env:
+          - name: spring.datasource.url
+            valueFrom:
+              configMapKeyRef:
+                name: project-config
+                key : datasourceUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-deployment-library
+  labels:
+    app: project-app-k8s-s
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: project-library
+  template:
+    metadata:
+      labels:
+        env: project-library
+    spec:
+      containers:
+        - name : project-library-service
+          image: pisklovcor/project-library-docker:dockerfile
+          ports:
+            - containerPort: 8000
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key : datasourceUrl
+            - name: spring.artemis.broker-url
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key : artemisUrl
+            - name: application.order-url
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key : orderUrl
+            - name: application.destinationSend
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: destination
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-deployment-notification
+  labels:
+    app: project-app-k8s-s
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: project-notification
+  template:
+    metadata:
+      labels:
+        env: project-notification
+    spec:
+      containers:
+        - name : project-notification-service
+          image: pisklovcor/project-notification-docker:dockerfile
+          ports:
+            - containerPort: 8003
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key : datasourceUrl
+            - name: spring.artemis.broker-url
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key : artemisUrl
+            - name: application.destinationListener
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: destination
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-deployment-order
+  labels:
+    app: project-app-k8s-s
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: project-order
+  template:
+    metadata:
+      labels:
+        env: project-order
+    spec:
+      containers:
+        - name : project-order-service
+          image: pisklovcor/project-order-docker:dockerfile
+          ports:
+            - containerPort: 8002
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key : datasourceUrl
+            - name: application.library-url
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: libraryUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: project-postgres
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: postgres-project
+  template:
+    metadata:
+      labels:
+        env: postgres-project
+    spec:
+      containers:
+        - name  : postgres-13
+          image : postgres:13.3
+          ports :
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: project-secret
+                  key : postgresDb
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: project-secret
+                  key : postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: project-secret
+                  key : postgresPassword
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jms-broker
+  labels:
+    app: project-jms-broker
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: jms-broker-project
+  template:
+    metadata:
+      labels:
+        env: jms-broker-project
+    spec:
+      containers:
+        - name  : project-broker
+          image : vromero/activemq-artemis:2.10.1
+          ports :
+            - containerPort: 61616
+          env:
+            - name: ARTEMIS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: project-secret
+                  key : artemisUsername
+            - name: ARTEMIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: project-secret
+                  key : artemisPassword
+            - name: ARTEMIS_MAX_MEMORY
+              value: 1G
+            - name: BROKER_CONFIG_GLOBAL_MAX_SIZE
+              value: "200000000"
+            - name: ARTEMIS_PERF_JOURNAL
+              value: ALWAYS
+            - name: ENABLE_JMX_EXPORTER
+              value: "true"
+            - name: JAVA_OPTS
+              value: -XX:NativeMemoryTracking=summary

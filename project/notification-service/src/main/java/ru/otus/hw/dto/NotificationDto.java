@@ -19,5 +19,4 @@ public class NotificationDto {
 
     private String author;
 
-
 }

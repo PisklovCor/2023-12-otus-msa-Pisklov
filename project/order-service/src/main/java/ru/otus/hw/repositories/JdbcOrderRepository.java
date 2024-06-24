@@ -57,7 +57,7 @@ public class JdbcOrderRepository implements OrderRepository {
             throw new EntityNotFoundException("The order is not updated");
         }
 
-        order.setStatus("status");
+        order.setStatus(status);
 
         return order;
     }

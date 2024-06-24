@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class OrderController {
+public class NotificationController {
 
     private final NotificationService service;
 

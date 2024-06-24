@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: project-config
+data:
+  datasourceUrl: "jdbc:postgresql://postgres-svc:5432/postgres"
+  artemisUrl   : "tcp://jms-broke-svc:61616"
+  destination  : "library-notice"
+  orderUrl     : "http://project-service-order:80"
+  libraryUrl   : "http://project-service-library:80"
