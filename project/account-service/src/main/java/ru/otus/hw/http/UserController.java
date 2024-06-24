@@ -45,6 +45,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(sessions);
     }
 
+    @Operation(summary = "Удалить все сесии")
+    @DeleteMapping("api/account/sessions")
+    public ResponseEntity<Map<UUID, AuthUser>> deleteSessions() {
+        sessions.clear();
+        return ResponseEntity.status(HttpStatus.OK).body(sessions);
+    }
+
     @Operation(summary = "Регистрация пользователя")
     @PostMapping("api/account/register")
     public ResponseEntity<AuthUser> register(@RequestBody AuthUserDto authUserDto) {
@@ -78,7 +85,7 @@ public class UserController {
     }
 
     @Operation(summary = "Авторизация пользоваетля (запись хедеров)")
-    @PostMapping("api/account/auth")
+    @PostMapping("auth")
     public ResponseEntity<ResponseDto> auth(HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
@@ -114,11 +121,11 @@ public class UserController {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("session_id") && !cookie.getValue().isBlank()) {
                     sessions.remove(UUID.fromString(cookie.getValue()));
+                    cookie.setValue("");
                 }
             }
         }
 
-        response.addCookie(new Cookie("session_id", null));
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(
                 ResponseDto.builder().status("Пользователь разлогинился").build());
     }

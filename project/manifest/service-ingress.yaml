@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class                      : nginx
     nginx.ingress.kubernetes.io/use-regex            : "true"
-    nginx.ingress.kubernetes.io/auth-url             : "http://arch.homework/api/account/auth"
+    nginx.ingress.kubernetes.io/auth-url             : "http://arch.homework/auth"
     nginx.ingress.kubernetes.io/auth-method          : 'POST'
     nginx.ingress.kubernetes.io/auth-signin          : "http://$host/api/account/signing"
     nginx.ingress.kubernetes.io/auth-response-headers: "X-Account-Id,X-User,X-Email,X-First-Name,X-Last-Name"
