@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @Operation(summary = "Вход пользователя (создание сессиии)")
-    @PostMapping("api/account/login")
+    @PostMapping("login")
     public ResponseEntity<ResponseDto> login(HttpServletResponse response,
                                              @RequestBody LoginDto loginDto) throws Exception {
 

@@ -20,3 +20,17 @@ spec:
                 name: project-service-account
                 port:
                   number: 80
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: project-service-account
+                port:
+                  number: 80
+          - path: /login
+            pathType: Prefix
+            backend:
+              service:
+                name: project-service-account
+                port:
+                  number: 80
