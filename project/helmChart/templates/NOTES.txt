@@ -1,0 +1,11 @@
+Thank you for installing {{ .Chart.Name }}.
+
+project source code: https://github.com/PisklovCor/2023-12-otus-msa-Pisklov/tree/main/project
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
+---

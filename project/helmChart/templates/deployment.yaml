@@ -1,0 +1,238 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-project-deployment-account
+  labels:
+    app: {{ .Release.Name }}-project-app-k8s-a
+
+spec:
+  replicas: {{ .Values.container.accountService.replicaCount }}
+  selector:
+    matchLabels:
+      env: project-account
+  template:
+    metadata:
+      labels:
+        env: project-account
+    spec:
+      containers:
+      - name : {{ .Release.Name }}-project-account-service
+        image: {{ .Values.container.accountService.image }}
+        ports:
+          - containerPort: {{ .Values.container.accountService.containerPort }}
+        env:
+          - name: spring.datasource.url
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}-project-config
+                key : datasourceUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-project-deployment-library
+  labels:
+    app: {{ .Release.Name }}-project-app-k8s-s
+
+spec:
+  replicas: {{ .Values.container.libraryService.replicaCount }}
+  selector:
+    matchLabels:
+      env: project-library
+  template:
+    metadata:
+      labels:
+        env: project-library
+    spec:
+      containers:
+        - name : {{ .Release.Name }}-project-library-service
+          image: {{ .Values.container.libraryService.image }}
+          ports:
+            - containerPort: {{ .Values.container.libraryService.containerPort }}
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key : datasourceUrl
+            - name: spring.artemis.broker-url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key : artemisUrl
+            - name: application.order-url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key : orderUrl
+            - name: application.destinationSend
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key: destination
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-project-deployment-notification
+  labels:
+    app: {{ .Release.Name }}-project-app-k8s-s
+
+spec:
+  replicas: {{ .Values.container.notificationService.replicaCount }}
+  selector:
+    matchLabels:
+      env: project-notification
+  template:
+    metadata:
+      labels:
+        env: project-notification
+    spec:
+      containers:
+        - name : {{ .Release.Name }}-project-notification-service
+          image: {{ .Values.container.notificationService.image }}
+          ports:
+            - containerPort: {{ .Values.container.notificationService.containerPort }}
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key : datasourceUrl
+            - name: spring.artemis.broker-url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key : artemisUrl
+            - name: application.destinationListener
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key: destination
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-project-deployment-order
+  labels:
+    app: {{ .Release.Name }}-project-app-k8s-s
+
+spec:
+  replicas: {{ .Values.container.orderService.replicaCount }}
+  selector:
+    matchLabels:
+      env: project-order
+  template:
+    metadata:
+      labels:
+        env: project-order
+    spec:
+      containers:
+        - name : {{ .Release.Name }}-project-order-service
+          image: {{ .Values.container.orderService.image }}
+          ports:
+            - containerPort: {{ .Values.container.orderService.containerPort }}
+          env:
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key : datasourceUrl
+            - name: application.library-url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-project-config
+                  key: libraryUrl
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-postgres
+  labels:
+    app: {{ .Release.Name }}-project-postgres
+
+spec:
+  replicas: {{ .Values.container.postgres.replicaCount }}
+  selector:
+    matchLabels:
+      env: postgres-project
+  template:
+    metadata:
+      labels:
+        env: postgres-project
+    spec:
+      containers:
+        - name  : {{ .Release.Name }}-postgres-13
+          image : {{ .Values.container.postgres.image }}
+          ports :
+            - containerPort: {{ .Values.container.postgres.containerPort }}
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-project-secret
+                  key : postgresDb
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-project-secret
+                  key : postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-project-secret
+                  key : postgresPassword
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-jms-broker
+  labels:
+    app: {{ .Release.Name }}-project-jms-broker
+
+spec:
+  replicas: {{ .Values.container.jms.replicaCount }}
+  selector:
+    matchLabels:
+      env: jms-broker-project
+  template:
+    metadata:
+      labels:
+        env: jms-broker-project
+    spec:
+      containers:
+        - name  : {{ .Release.Name }}-project-broker
+          image : {{ .Values.container.jms.image }}
+          ports :
+            - containerPort: {{ .Values.container.jms.containerPort }}
+          env:
+            - name: ARTEMIS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-project-secret
+                  key : artemisUsername
+            - name: ARTEMIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-project-secret
+                  key : artemisPassword
+            - name: ARTEMIS_MAX_MEMORY
+              value: 1G
+            - name: BROKER_CONFIG_GLOBAL_MAX_SIZE
+              value: "200000000"
+            - name: ARTEMIS_PERF_JOURNAL
+              value: ALWAYS
+            - name: ENABLE_JMX_EXPORTER
+              value: "true"
+            - name: JAVA_OPTS
+              value: -XX:NativeMemoryTracking=summary

@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-project-service-account
+
+spec:
+  selector:
+    env: project-account
+  ports:
+    - protocol  : {{ .Values.ports.protocol }}
+      port      : {{ .Values.ports.port }}
+      targetPort: {{ .Values.container.accountService.containerPort }}
+  type: {{ .Values.ports.type }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-project-service-library
+
+spec:
+  selector:
+    env: project-library
+  ports:
+    - protocol  : {{ .Values.ports.protocol }}
+      port      : {{ .Values.ports.port }}
+      targetPort: {{ .Values.container.libraryService.containerPort }}
+  type: {{ .Values.ports.type }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-project-service-notification
+
+spec:
+  selector:
+    env: project-notification
+  ports:
+    - protocol  : {{ .Values.ports.protocol }}
+      port      : {{ .Values.ports.port }}
+      targetPort: {{ .Values.container.notificationService.containerPort }}
+  type: {{ .Values.ports.type }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-project-service-order
+
+spec:
+  selector:
+    env: project-order
+  ports:
+    - protocol  : {{ .Values.ports.protocol }}
+      port      : {{ .Values.ports.port }}
+      targetPort: {{ .Values.container.orderService.containerPort }}
+  type: {{ .Values.ports.type }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-postgres-svc
+
+spec:
+  selector:
+    env: postgres-project
+  ports:
+    - port      : {{ .Values.container.postgres.containerPort }}
+      targetPort: {{ .Values.container.postgres.containerPort }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-jms-broke-svc
+
+spec:
+  selector:
+    env: jms-broker-project
+  ports:
+    - protocol  : {{ .Values.ports.protocol }}
+      port      : {{ .Values.container.jms.containerPort }}
+      targetPort: {{ .Values.container.jms.containerPort }}

@@ -1,0 +1,37 @@
+# Default Values for my Helm Chart
+ports:
+  port: 80
+  protocol: TCP
+  type: ClusterIP
+
+base:
+  port: 80
+  host: arch.homework
+  pathType: ImplementationSpecific
+  pathTypePrefix: Prefix
+
+container:
+  accountService:
+    image: pisklovcor/project-account-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8001
+  libraryService:
+    image: pisklovcor/project-library-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8000
+  notificationService:
+    image: pisklovcor/project-notification-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8003
+  orderService:
+    image: pisklovcor/project-order-docker:dockerfile
+    replicaCount: 1
+    containerPort: 8002
+  postgres:
+    image: postgres:13.3
+    replicaCount: 1
+    containerPort: 5432
+  jms:
+    image: vromero/activemq-artemis:2.10.1
+    replicaCount: 1
+    containerPort: 61616

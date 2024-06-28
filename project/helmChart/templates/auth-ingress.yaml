@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-project-ingress-auth
+  annotations:
+    kubernetes.io/ingress.class                       : nginx
+    nginx.ingress.kubernetes.io/use-regex             : "true"
+    nginx.ingress.kubernetes.io/auth-response-headers : "X-Account-Id,X-User,X-Email,X-First-Name,X-Last-Name"
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.base.host }}
+      http:
+        paths:
+          - path: /api/account/.*
+            pathType: {{ .Values.base.pathType }}
+            backend:
+              service:
+                name: {{ .Release.Name }}-project-service-account
+                port:
+                  number: {{ .Values.base.port }}
+          - path: /auth
+            pathType: {{ .Values.base.pathTypePrefix }}
+            backend:
+              service:
+                name: {{ .Release.Name }}-project-service-account
+                port:
+                  number: {{ .Values.base.port }}
+          - path: /login
+            pathType: {{ .Values.base.pathTypePrefix }}
+            backend:
+              service:
+                name: {{ .Release.Name }}-project-service-account
+                port:
+                  number: {{ .Values.base.port }}
